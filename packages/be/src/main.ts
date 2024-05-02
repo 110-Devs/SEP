@@ -9,7 +9,7 @@ import {extractMetadataFromHeaders} from "@server/infrastructure/extractMetadata
 import {ensureCEUserIsNotSetInProductionMode} from "@server/infrastructure/ensureCEUserIsNotSetInProductionMode";
 import {getExternalServiceOrThrow} from "@server/extensions/get-external-service";
 import {AuthService} from "@server/infrastructure/auth-service/auth-service";
-
+import {createLlama, chatWithLlama, deezNuts} from "./ai/llama-interact";
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 4100;
 
@@ -19,6 +19,8 @@ const authService = getExternalServiceOrThrow<AuthService>('AuthService', {});
 
 app.use(json());
 app.use(ensureCEUserIsNotSetInProductionMode);
+
+createLlama("llama3");
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if(err instanceof ValidationError) {
@@ -106,3 +108,12 @@ app.use(errorHandler);
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);
 });
+
+app.post("/", async function (req, res) {
+  console.log("Frage wird bearbeitet...")
+  const question = req.query.questionPrompt?.toString();
+
+  //Generierung der Antwort
+  const response = chatWithLlama("llama3", question === undefined ? "Error" : question);
+  console.log(response);
+})

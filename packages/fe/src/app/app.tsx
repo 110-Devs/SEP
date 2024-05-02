@@ -22,6 +22,7 @@ import ToggleColorMode from "@frontend/app/providers/ToggleColorMode";
 import User from "@frontend/app/providers/User";
 import PageDataProvider from "@frontend/app/providers/PageData";
 import ErrorBoundary from "@frontend/app/components/core/ErrorBoundary";
+import AiInterface from "./ai/fe/layout/AiInterface";
 
 export function App() {
   const Layout = (props: React.PropsWithChildren) => {
@@ -33,6 +34,7 @@ export function App() {
               <MainLayout>
                 <ScrollToTop />
                 <Outlet />
+                <AiInterface />
               </MainLayout>
             </SnackbarProvider>
           </ToggleColorMode>
