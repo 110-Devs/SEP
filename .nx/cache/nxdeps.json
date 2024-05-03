@@ -19,6 +19,7 @@
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "axios": "^1.4.0",
+    "body-parser": "^1.20.2",
     "commander": "^12.0.0",
     "express": "~4.18.1",
     "express-async-errors": "^3.1.1",
@@ -2896,23 +2897,23 @@
             "hash": "11735907023887803904",
             "dependencies": [
               {
+                "source": "be",
                 "target": "shared",
-                "source": "be",
                 "type": "static"
               },
               {
+                "source": "be",
                 "target": "infrastructure",
-                "source": "be",
                 "type": "static"
               },
               {
+                "source": "be",
                 "target": "messaging",
-                "source": "be",
                 "type": "static"
               },
               {
-                "target": "descriptions",
                 "source": "be",
+                "target": "descriptions",
                 "type": "static"
               }
             ]
@@ -2923,7 +2924,7 @@
           },
           {
             "file": "packages/be/tsconfig.app.json",
-            "hash": "5103253668639753083"
+            "hash": "11450211340430946599"
           },
           {
             "file": "packages/be/tsconfig.json",

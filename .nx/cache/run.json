@@ -1,0 +1,43 @@
+{
+  "run": {
+    "command": "nx run-many -t test -p be fe shared",
+    "startTime": "2024-05-03T08:22:50.048Z",
+    "endTime": "2024-05-03T08:23:13.896Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "shared:test",
+      "target": "test",
+      "projectName": "shared",
+      "hash": "dc8270c2c7d0b0466166f9fc88b5567878f300ab08454d8d9ffc626e4df2b4f6",
+      "startTime": "2024-05-03T08:22:50.053Z",
+      "endTime": "2024-05-03T08:22:52.981Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "be:test",
+      "target": "test",
+      "projectName": "be",
+      "hash": "de8a5ce0aab95e028f18fd4269a24c9852d5129066104615e57cd1d0b3a9889b",
+      "startTime": "2024-05-03T08:22:50.053Z",
+      "endTime": "2024-05-03T08:22:52.988Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "fe:test",
+      "target": "test",
+      "projectName": "fe",
+      "hash": "e5ba189ef2370a4578bfa22648aed36a01028f7fa374e8ed431a3600d74603f3",
+      "startTime": "2024-05-03T08:22:50.053Z",
+      "endTime": "2024-05-03T08:23:13.893Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}
