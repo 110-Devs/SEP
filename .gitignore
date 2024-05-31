@@ -41,6 +41,7 @@ Thumbs.db
 # Filesystem storage
 data/*
 !data/.gitkeep
+.nx/*
 
 # Ignore generated files
 packages/shared/src/lib/*

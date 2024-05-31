@@ -5,6 +5,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.1",
+    "@medv/finder": "^3.2.0",
     "@monaco-editor/react": "^4.5.2",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.2",
@@ -96,6 +97,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^4.9.5",
     "url-loader": "^4.1.1",
+    "webpack-cli": "^5.1.4",
     "whatwg-fetch": "^3.6.17"
   },
   "pathMappings": {
@@ -110,6 +112,9 @@
     ],
     "@cody-engine/contribution/*": [
       "packages/contribution/src/*"
+    ],
+    "@cody-engine/lab/ai/*": [
+      "packages/lab/ai/src/*"
     ],
     "@cody-play/*": [
       "packages/play/src/*"
@@ -2968,7 +2973,12 @@
               "tsConfig": "packages/fe/tsconfig.app.json",
               "assets": [
                 "packages/fe/src/favicon.ico",
-                "packages/fe/src/assets"
+                "packages/fe/src/assets",
+                {
+                  "input": "packages/lab/ai/src/lib/assets",
+                  "glob": "**/*",
+                  "output": "assets"
+                }
               ],
               "styles": [],
               "scripts": [],
@@ -3079,7 +3089,7 @@
           },
           {
             "file": "packages/fe/project.json",
-            "hash": "12077718373818686345"
+            "hash": "2073643688753961741"
           },
           {
             "file": "packages/fe/proxy.conf.json",
@@ -3100,6 +3110,213 @@
           {
             "file": "packages/fe/webpack.config.js",
             "hash": "11177731842764922306"
+          }
+        ]
+      }
+    },
+    "lab-ai": {
+      "name": "lab-ai",
+      "type": "lib",
+      "data": {
+        "name": "lab-ai",
+        "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+        "sourceRoot": "packages/lab/ai/src",
+        "projectType": "library",
+        "targets": {
+          "build": {
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
+            "executor": "@nx/esbuild:esbuild",
+            "outputs": [
+              "{options.outputPath}"
+            ],
+            "options": {
+              "platform": "node",
+              "outputPath": "dist/packages/ai",
+              "format": [
+                "cjs"
+              ],
+              "bundle": false,
+              "main": "packages/lab/ai/src/main.ts",
+              "tsConfig": "packages/lab/ai/tsconfig.lib.json",
+              "generatePackageJson": true,
+              "esbuildOptions": {
+                "sourcemap": true,
+                "outExtension": {
+                  ".js": ".js"
+                }
+              }
+            },
+            "configurations": {
+              "development": {},
+              "production": {
+                "generateLockfile": true,
+                "esbuildOptions": {
+                  "sourcemap": false,
+                  "outExtension": {
+                    ".js": ".js"
+                  }
+                }
+              }
+            }
+          },
+          "serve": {
+            "executor": "nx:run-commands",
+            "defaultConfiguration": "development",
+            "options": {
+              "cwd": "packages/lab/ai",
+              "color": true,
+              "command": "nodemon",
+              "buildTarget": "lab-ai:build"
+            },
+            "configurations": {
+              "development": {
+                "buildTarget": "lab-ai:build:development"
+              },
+              "production": {
+                "buildTarget": "lab-ai:build:production"
+              }
+            }
+          },
+          "lint": {
+            "inputs": [
+              "default",
+              "{workspaceRoot}/.eslintrc.json",
+              "{workspaceRoot}/.eslintignore"
+            ],
+            "executor": "@nx/linter:eslint",
+            "outputs": [
+              "{options.outputFile}"
+            ],
+            "options": {
+              "lintFilePatterns": [
+                "packages/lab/ai/**/*.ts"
+              ]
+            },
+            "configurations": {}
+          },
+          "test": {
+            "inputs": [
+              "default",
+              "^production",
+              "{workspaceRoot}/jest.preset.js"
+            ],
+            "executor": "@nx/jest:jest",
+            "outputs": [
+              "{workspaceRoot}/coverage/{projectRoot}"
+            ],
+            "options": {
+              "jestConfig": "packages/lab/ai/jest.config.ts",
+              "passWithNoTests": true
+            },
+            "configurations": {
+              "ci": {
+                "ci": true,
+                "codeCoverage": true
+              }
+            }
+          }
+        },
+        "tags": [],
+        "root": "packages/lab/ai",
+        "implicitDependencies": [],
+        "files": [
+          {
+            "file": "packages/lab/ai/.eslintrc.json",
+            "hash": "17795843241288797487"
+          },
+          {
+            "file": "packages/lab/ai/jest.config.ts",
+            "hash": "10557880510155809449"
+          },
+          {
+            "file": "packages/lab/ai/nodemon.json",
+            "hash": "16857213420838486893"
+          },
+          {
+            "file": "packages/lab/ai/project.json",
+            "hash": "15935179841131036053"
+          },
+          {
+            "file": "packages/lab/ai/README.md",
+            "hash": "13897365948979363405"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/assets/ai.svg",
+            "hash": "13301589024301313824"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/components/AiInterface.tsx",
+            "hash": "9336251602083569342"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/components/ChatInputField.tsx",
+            "hash": "3351085622408415435"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/components/ChatToggleButton.tsx",
+            "hash": "6642369153347702106"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/components/FilterDOM.tsx",
+            "hash": "4206315381451508142"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/environments/environment.ts",
+            "hash": "8578060847681425838"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/environments/modelConfig.ts",
+            "hash": "7739715924749653914"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/styles/AiInterface.styles.ts",
+            "hash": "4210792065536283107"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/styles/ChatInputField.styles.ts",
+            "hash": "15162453366090949540"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/styles/ChatToggleButton.styles.ts",
+            "hash": "4148116890841213242"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/truncate/domJSON.js",
+            "hash": "16175985365222823824"
+          },
+          {
+            "file": "packages/lab/ai/src/lib/truncate/filter.ts",
+            "hash": "16505133950830049602"
+          },
+          {
+            "file": "packages/lab/ai/src/main.ts",
+            "hash": "15156996648296297830"
+          },
+          {
+            "file": "packages/lab/ai/src/server.ts",
+            "hash": "13830649984782199249"
+          },
+          {
+            "file": "packages/lab/ai/tsconfig.json",
+            "hash": "2486577411938537222"
+          },
+          {
+            "file": "packages/lab/ai/tsconfig.lib.json",
+            "hash": "18426133021311345208"
+          },
+          {
+            "file": "packages/lab/ai/tsconfig.spec.json",
+            "hash": "2924590645906076043"
+          },
+          {
+            "file": "packages/lab/ai/webpack.config.js",
+            "hash": "9751620331216376488"
           }
         ]
       }
@@ -3183,6 +3400,7 @@
         "type": "static"
       }
     ],
-    "fe": []
+    "fe": [],
+    "lab-ai": []
   }
 }
