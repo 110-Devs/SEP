@@ -9,8 +9,6 @@ import {extractMetadataFromHeaders} from "@server/infrastructure/extractMetadata
 import {ensureCEUserIsNotSetInProductionMode} from "@server/infrastructure/ensureCEUserIsNotSetInProductionMode";
 import {getExternalServiceOrThrow} from "@server/extensions/get-external-service";
 import {AuthService} from "@server/infrastructure/auth-service/auth-service";
-import bodyParser from "body-parser";
-import { createLlama, chatWithLlama, deezNuts } from "./ai/llama-interact";
 
 const host = process.env.HOST ?? 'localhost';
 const port = process.env.PORT ? Number(process.env.PORT) : 4100;
@@ -108,24 +106,3 @@ app.use(errorHandler);
 app.listen(port, host, () => {
   console.log(`[ ready ] http://${host}:${port}`);
 });
-
-//KI-Anbindung???
-const app2 = express();
-
-app2.use(bodyParser.urlencoded({extended: true}));
-
-app2.post("/ki-und-prooph-hochschule-ma", async (req, res) => {  
-  await createLlama("llama3");
-  console.log("Frage wird bearbeitet...");
-  
-  const question = req.body.questionPrompt;
-  console.log(question);
-
-  const response = await chatWithLlama("llama3", question);
-  console.log(response);
-
-})
-
-app2.listen(4200, host, () => {
-  console.log(`[ ready ] http://${host}:4200`);
-})
