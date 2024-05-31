@@ -22,7 +22,7 @@ import ToggleColorMode from "@frontend/app/providers/ToggleColorMode";
 import User from "@frontend/app/providers/User";
 import PageDataProvider from "@frontend/app/providers/PageData";
 import ErrorBoundary from "@frontend/app/components/core/ErrorBoundary";
-import AiInterface from "./ai/fe/layout/AiInterface";
+import AiInterface from "@cody-engine/lab/ai/lib/components/AiInterface";
 
 export function App() {
   const Layout = (props: React.PropsWithChildren) => {
