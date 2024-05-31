@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "serve": "ts-node packages/infrastructure/src/lib/helpers/create-registry-files.ts && npx nx run-many -t serve",
+    "serve": "ts-node packages/infrastructure/src/lib/helpers/create-registry-files.ts && npx nx run-many -t serve --all --maxParallel=4",
     "play": "ts-node packages/infrastructure/src/lib/helpers/create-registry-files.ts && npx nx run play:spinup",
     "prepare-contribution": "npx nx g @cody-engine/contribution:prepare-contribution",
     "test": "npx nx run-many -t test -p be fe shared",
@@ -73,12 +73,14 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^4.9.5",
     "url-loader": "^4.1.1",
+    "webpack-cli": "^5.1.4",
     "whatwg-fetch": "^3.6.17"
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.1",
+    "@medv/finder": "^3.2.0",
     "@monaco-editor/react": "^4.5.2",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.2",

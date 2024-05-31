@@ -17,6 +17,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    //"noImplicitAny": false,                            /* Enable error reporting for expressions and declarations with an implied 'any' type. */
     "paths": {
       "@app/shared/*": ["packages/shared/src/lib/*"],
       "@cody-engine/cody/*": ["packages/cody/src/lib/*"],
