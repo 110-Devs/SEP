@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
-import ChatInputFlied from './ChatInputField';
+import ChatInputField from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
+import useScript from '../hooks/useScript';
 
 /**
  * Renders the AI interface component.
@@ -9,7 +10,10 @@ import ChatToggleButton from './ChatToggleButton';
  */
 const AiInterface: React.FC = () => {
   const [chatInputBoxIsShown, setChatInputBoxVisibility] = useState(false);
-
+  // scripts for filtering
+  useScript('../truncate/domJSON.js');
+  // useScript('../truncate/filter.ts');
+  
   /**
    * Toggles the visibility of the chat input box.
    */
@@ -23,7 +27,7 @@ const AiInterface: React.FC = () => {
         toggleChatInputBox={toggleChatInputBox}
         chatInputBoxIsShown={chatInputBoxIsShown}
       />
-      {chatInputBoxIsShown && <ChatInputFlied />}
+      {chatInputBoxIsShown && <ChatInputField />}
     </InterfaceContainer>
   );
 };

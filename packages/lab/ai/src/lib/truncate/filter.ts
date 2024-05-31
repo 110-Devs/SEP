@@ -1,4 +1,4 @@
-import { createDomJSON } from "./domJSON";
+import createDomJSON = require("../truncate/domJSON");
 
 console.log("Hello World");
 

@@ -12,7 +12,7 @@ import { finder } from "@medv/finder";
  * @license The MIT License: Copyright (c) 2013 Alex Zaslavsky
  */
 
-export function createDomJSON(win) {
+function createDomJSON(win) {
     "use strict";
   
     /**
@@ -677,3 +677,5 @@ export function createDomJSON(win) {
       window.domJSON = createDomJSON(root);
     }
   })(this);
+
+  module.exports = createDomJSON;
