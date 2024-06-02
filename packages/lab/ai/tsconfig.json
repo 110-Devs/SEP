@@ -1,7 +1,9 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs"
+    "module": "commonjs",
+    // Hier sind die Fingerabdruecke von Ruben
+    "allowJs": true, 
   },
   "files": [],
   "include": [],

@@ -16,7 +16,7 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, '../../../dist/packages/truncate'),
+    path: path.resolve(__dirname, './src/lib/dist'),
   },
   mode: 'development',
 };

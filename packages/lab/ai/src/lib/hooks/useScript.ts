@@ -15,7 +15,6 @@ const useScript = (url: string) => {
       script.async = true;
       // Add any attributes or event listeners to the script if necessary
       // For example:
-      // script.async = true;
       // script.onload = () => { console.log('Script loaded!'); };
       // Append the script element to the document body
       document.body.appendChild(script);

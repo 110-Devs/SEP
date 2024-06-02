@@ -3,6 +3,7 @@ import { InterfaceContainer } from '../styles/AiInterface.styles';
 import ChatInputField from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
 import useScript from '../hooks/useScript';
+import { domJSON } from '../truncate/filter';
 
 /**
  * Renders the AI interface component.
@@ -10,10 +11,22 @@ import useScript from '../hooks/useScript';
  */
 const AiInterface: React.FC = () => {
   const [chatInputBoxIsShown, setChatInputBoxVisibility] = useState(false);
-  // scripts for filtering
-  useScript('../truncate/domJSON.js');
-  // useScript('../truncate/filter.ts');
-  
+
+  //Was Ruben gemacht hat :))
+  useScript('../truncate/bundle.js');
+  useScript('../truncate/filter.ts');
+
+  const myDiv = domJSON.toJSON(document.body, {
+    attributes: {
+      values: ['name', 'class', 'id', 'data-selector'],
+    },
+    domProperties: {
+      values: [],
+    },
+  });
+
+  console.log(myDiv);
+
   /**
    * Toggles the visibility of the chat input box.
    */
