@@ -1,12 +1,13 @@
+/* eslint-disable prefer-const */
 import React, { useEffect } from 'react';
 import { domJSON } from '../truncate/filter';
+import { updateClassNames, ClassNameGenerator} from '../truncate/createMaps';
 
 const JsonConverter = () => {
   useEffect(() => {
     // Function to execute code
     const runDomJSON = async () => {
-      //Umwandlung der Cody-DOM; Der Platz im Code ist noch unklar.
-      //const myNode = document.getElementsByClassName("MuiDataGrid-overlayWrapperInner css-1akuw9y-MuiDataGrid-overlayWrapperInner")[0] as HTMLElement;
+      //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
       const codyJSON = domJSON.toJSON(document.body, {
         attributes: {
           values: ['name', 'class', 'id', 'data-selector'],
@@ -15,8 +16,17 @@ const JsonConverter = () => {
           values: [],
         },
       });
+
+      //Hashmaps
+      let classMap = new Map<string, string>();
+      let selectorMap = new Map<string, string>();
+      const classNameGenerator = new ClassNameGenerator();
+      updateClassNames(codyJSON, classMap, selectorMap, classNameGenerator);
+
       // Output for testing
       console.log(codyJSON);
+      console.log(classMap);
+      console.log(selectorMap);
     };
 
     // Execute the function

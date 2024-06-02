@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/lib/truncate/filter.ts',
+  entry: './src/lib/truncate/createMap.ts',
   module: {
     rules: [
       {

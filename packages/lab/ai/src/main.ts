@@ -13,21 +13,6 @@ const model = environment.MODEL_NAME;
 app.use(cors());
 app.use(express.json());
 
-
-//Umwandlung der Cody-DOM; Der Platz im Code ist noch unklar.
-  //const myNode = document.getElementsByClassName("MuiDataGrid-overlayWrapperInner css-1akuw9y-MuiDataGrid-overlayWrapperInner")[0] as HTMLElement;
-    
-  const codyJSON = domJSON.toJSON(document.body, {
-    attributes: {
-      values: ['name', 'class', 'id', 'data-selector'],
-    },
-    domProperties: {
-      values: [],
-    },
-  });
-  //Ausgabe zum Testen
-  console.log(codyJSON);
-
 /**
  * Function to create the model.
  */

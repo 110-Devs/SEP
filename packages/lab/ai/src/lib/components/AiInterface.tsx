@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
 import ChatInputField from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
-import { domJSON } from '../truncate/filter';
+//import { domJSON } from '../truncate/filter';
 import JsonConverter from './JsonConverter';
 
 /**

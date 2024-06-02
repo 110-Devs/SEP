@@ -109,7 +109,8 @@ const extend: any = function (target: any) {
 
   //If we have more arguments, run the function recursively
   if (arguments.length > 2) {
-    let moreArgs = [target].concat(Array.prototype.slice.call(arguments, 2));
+    const moreArgs = [target].concat(Array.prototype.slice.call(arguments, 2));
+    // eslint-disable-next-line prefer-spread
     return extend.apply(null, moreArgs);
   } else {
     return target;
@@ -567,7 +568,6 @@ domJSON.toJSON = function (node: any, opts: any) {
   copy = toJSON(node, options, 0);
 
   //Wrap our copy object in a nice object of its own to save some metadata
-
   output = copy;
 
   return output;
