@@ -2,7 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: ollama } = require('ollama');
+import { domJSON } from './lib/truncate/filter';
 
 const app = express();
 const port = environment.PORT;
@@ -10,6 +12,21 @@ const model = environment.MODEL_NAME;
 
 app.use(cors());
 app.use(express.json());
+
+
+//Umwandlung der Cody-DOM; Der Platz im Code ist noch unklar.
+  //const myNode = document.getElementsByClassName("MuiDataGrid-overlayWrapperInner css-1akuw9y-MuiDataGrid-overlayWrapperInner")[0] as HTMLElement;
+    
+  const codyJSON = domJSON.toJSON(document.body, {
+    attributes: {
+      values: ['name', 'class', 'id', 'data-selector'],
+    },
+    domProperties: {
+      values: [],
+    },
+  });
+  //Ausgabe zum Testen
+  console.log(codyJSON);
 
 /**
  * Function to create the model.

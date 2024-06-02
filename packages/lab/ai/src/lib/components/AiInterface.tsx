@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
 import ChatInputField from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
-import useScript from '../hooks/useScript';
 import { domJSON } from '../truncate/filter';
+import JsonConverter from './JsonConverter';
 
 /**
  * Renders the AI interface component.
@@ -11,21 +11,6 @@ import { domJSON } from '../truncate/filter';
  */
 const AiInterface: React.FC = () => {
   const [chatInputBoxIsShown, setChatInputBoxVisibility] = useState(false);
-
-  //Was Ruben gemacht hat :))
-  useScript('../truncate/bundle.js');
-  useScript('../truncate/filter.ts');
-
-  const myDiv = domJSON.toJSON(document.body, {
-    attributes: {
-      values: ['name', 'class', 'id', 'data-selector'],
-    },
-    domProperties: {
-      values: [],
-    },
-  });
-
-  console.log(myDiv);
 
   /**
    * Toggles the visibility of the chat input box.
@@ -41,6 +26,7 @@ const AiInterface: React.FC = () => {
         chatInputBoxIsShown={chatInputBoxIsShown}
       />
       {chatInputBoxIsShown && <ChatInputField />}
+      <JsonConverter />
     </InterfaceContainer>
   );
 };
