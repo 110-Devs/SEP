@@ -39,11 +39,12 @@ export function updateClassNames(node: JsonNode,
 ): void {
 
 
-    const currentNumber = classNameGenerator.generateClassName();
+    let currentNumber = "";
     const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);
 
 
     if (node.attributes && node.attributes.class) {
+        currentNumber = classNameGenerator.generateClassName();
         classMap.set(currentNumber, node.attributes.class);
         selectorMap.set(currentNumber,currentSelector);
         node.attributes.class = currentNumber;
@@ -75,7 +76,7 @@ function getSelectorString(node: JsonNode, path: string[] = []): string {
     return path.join(' > ');
 }
 
-// Example usage:
+// document.body node of the Cody DOM
 const htmlJson: JsonNode = {
     "nodeType": 1,
     "tagName": "DIV",

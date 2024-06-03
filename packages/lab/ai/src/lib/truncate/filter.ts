@@ -3,9 +3,10 @@ import { finder } from '@medv/finder';
 /* eslint-disable prefer-rest-params */
 /**
  * domJSON.js: A simple framework for converting DOM nodes to special JSON objects, and vice versa
- *
+ * Rewritten for TypeScript and removed module initialization. Import required to use the logic.
+ * 
  * @fileOverview
- * @author  Alex Zaslavsky
+ * @author  Alex Zaslavsky, Ruben the G.O.A.T
  * @version 0.1.2
  * @license The MIT License: Copyright (c) 2013 Alex Zaslavsky
  */
@@ -31,7 +32,6 @@ export const domJSON: any = {};
  */
 const defaultsForToJSON = {
   absolutePaths: ['action', 'data', 'href', 'src'],
-  //absStylePaths: ['attr', 'background', 'background-image', 'border-image', 'border-image-source', 'content', 'list-style-image', 'mask-image'], //http://stackoverflow.com/questions/27790925/what-are-all-the-css3-properties-that-accept-urls-or-uris
   attributes: true,
   computedStyle: false,
   cull: true,
@@ -40,7 +40,6 @@ const defaultsForToJSON = {
   filter: false,
   htmlOnly: false,
   metadata: true,
-  //parse: false,
   serialProperties: false,
   stringify: false,
   allowDangerousElements: false,
@@ -415,7 +414,7 @@ const attrJSON = function (node: any, opts: any) {
 
   //Author: Ruben a.k.a the GOAT
   //Inserting custom attribute "data-selector" with the selector of the element as the value.
-  attributes['data-selector'] = finder(node);
+  //attributes['data-selector'] = finder(node);
 
   attributes = opts.attributes ? boolFilter(attributes, opts.attributes) : null;
 

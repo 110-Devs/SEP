@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
 import ChatInputField from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
-//import { domJSON } from '../truncate/filter';
-import JsonConverter from './JsonConverter';
 
 /**
  * Renders the AI interface component.
@@ -26,7 +24,6 @@ const AiInterface: React.FC = () => {
         chatInputBoxIsShown={chatInputBoxIsShown}
       />
       {chatInputBoxIsShown && <ChatInputField />}
-      <JsonConverter />
     </InterfaceContainer>
   );
 };

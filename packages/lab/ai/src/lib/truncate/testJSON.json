@@ -1,48 +1,56 @@
 {
     "nodeType": 1,
     "tagName": "BODY",
-    "attributes": {},
+    "attributes": {
+        "data-selector": "body"
+    },
     "childNodes": [
         {
             "nodeType": 1,
             "tagName": "DIV",
             "attributes": {
-                "id": "root"
+                "id": "root",
+                "data-selector": "#root"
             },
             "childNodes": [
                 {
                     "nodeType": 1,
                     "tagName": "DIV",
                     "attributes": {
-                        "class": "A03"
+                        "class": "A03",
+                        "data-selector": ".css-1fa9wkz"
                     },
                     "childNodes": [
                         {
                             "nodeType": 1,
                             "tagName": "HEADER",
                             "attributes": {
-                                "class": "A04"
+                                "class": "A04",
+                                "data-selector": ".MuiPaper-elevation4"
                             },
                             "childNodes": [
                                 {
                                     "nodeType": 1,
                                     "tagName": "DIV",
                                     "attributes": {
-                                        "class": "A05"
+                                        "class": "A05",
+                                        "data-selector": ".MuiToolbar-root"
                                     },
                                     "childNodes": [
                                         {
                                             "nodeType": 1,
                                             "tagName": "DIV",
                                             "attributes": {
-                                                "class": "A06"
+                                                "class": "A06",
+                                                "data-selector": ".css-2k0wqz"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "H3",
                                                     "attributes": {
-                                                        "class": "A07"
+                                                        "class": "A07",
+                                                        "data-selector": ".css-w9zzx7-MuiTypography-root"
                                                     },
                                                     "childNodes": [
                                                         {
@@ -58,35 +66,40 @@
                                             "nodeType": 1,
                                             "tagName": "DIV",
                                             "attributes": {
-                                                "class": "A09"
+                                                "class": "A09",
+                                                "data-selector": ".css-9n8416"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "NAV",
                                                     "attributes": {
-                                                        "class": "A10"
+                                                        "class": "A10",
+                                                        "data-selector": ".MuiBreadcrumbs-root"
                                                     },
                                                     "childNodes": [
                                                         {
                                                             "nodeType": 1,
                                                             "tagName": "OL",
                                                             "attributes": {
-                                                                "class": "A11"
+                                                                "class": "A11",
+                                                                "data-selector": ".MuiBreadcrumbs-ol"
                                                             },
                                                             "childNodes": [
                                                                 {
                                                                     "nodeType": 1,
                                                                     "tagName": "LI",
                                                                     "attributes": {
-                                                                        "class": "A12"
+                                                                        "class": "A12",
+                                                                        "data-selector": ".MuiBreadcrumbs-li"
                                                                     },
                                                                     "childNodes": [
                                                                         {
                                                                             "nodeType": 1,
                                                                             "tagName": "P",
                                                                             "attributes": {
-                                                                                "class": "A13"
+                                                                                "class": "A13",
+                                                                                "data-selector": ".css-4peds9-MuiTypography-root"
                                                                             },
                                                                             "childNodes": []
                                                                         }
@@ -102,7 +115,8 @@
                                             "nodeType": 1,
                                             "tagName": "DIV",
                                             "attributes": {
-                                                "class": "A14"
+                                                "class": "A14",
+                                                "data-selector": ".css-i9gxme"
                                             },
                                             "childNodes": []
                                         },
@@ -110,20 +124,24 @@
                                             "nodeType": 1,
                                             "tagName": "BUTTON",
                                             "attributes": {
-                                                "class": "A15"
+                                                "class": "A15",
+                                                "data-selector": ".css-78trlr-MuiButtonBase-root-MuiIconButton-root"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "svg",
                                                     "attributes": {
-                                                        "class": "A16"
+                                                        "class": "A16",
+                                                        "data-selector": ".css-1d159sf-MuiSvgIcon-root"
                                                     },
                                                     "childNodes": [
                                                         {
                                                             "nodeType": 1,
                                                             "tagName": "path",
-                                                            "attributes": {},
+                                                            "attributes": {
+                                                                "data-selector": ".css-1d159sf-MuiSvgIcon-root > path"
+                                                            },
                                                             "childNodes": []
                                                         }
                                                     ]
@@ -134,20 +152,24 @@
                                             "nodeType": 1,
                                             "tagName": "BUTTON",
                                             "attributes": {
-                                                "class": "A18"
+                                                "class": "A18",
+                                                "data-selector": ".css-1jfmqnk-MuiButtonBase-root-MuiIconButton-root"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "svg",
                                                     "attributes": {
-                                                        "class": "A19"
+                                                        "class": "A19",
+                                                        "data-selector": ".css-1jfmqnk-MuiButtonBase-root-MuiIconButton-root > .MuiSvgIcon-root"
                                                     },
                                                     "childNodes": [
                                                         {
                                                             "nodeType": 1,
                                                             "tagName": "path",
-                                                            "attributes": {},
+                                                            "attributes": {
+                                                                "data-selector": ".css-1jfmqnk-MuiButtonBase-root-MuiIconButton-root path"
+                                                            },
                                                             "childNodes": []
                                                         }
                                                     ]
@@ -162,49 +184,56 @@
                             "nodeType": 1,
                             "tagName": "MAIN",
                             "attributes": {
-                                "class": "A21"
+                                "class": "A21",
+                                "data-selector": ".css-5u1jm3"
                             },
                             "childNodes": [
                                 {
                                     "nodeType": 1,
                                     "tagName": "DIV",
                                     "attributes": {
-                                        "class": "A22"
+                                        "class": "A22",
+                                        "data-selector": ".MuiGrid2-container"
                                     },
                                     "childNodes": [
                                         {
                                             "nodeType": 1,
                                             "tagName": "DIV",
                                             "attributes": {
-                                                "class": "A23"
+                                                "class": "A23",
+                                                "data-selector": ".MuiGrid2-grid-xs-12:nth-child(1)"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "DIV",
                                                     "attributes": {
-                                                        "class": "A24"
+                                                        "class": "A24",
+                                                        "data-selector": ".MuiPaper-rounded"
                                                     },
                                                     "childNodes": [
                                                         {
                                                             "nodeType": 1,
                                                             "tagName": "DIV",
                                                             "attributes": {
-                                                                "class": "A25"
+                                                                "class": "A25",
+                                                                "data-selector": ".MuiCardHeader-root"
                                                             },
                                                             "childNodes": [
                                                                 {
                                                                     "nodeType": 1,
                                                                     "tagName": "DIV",
                                                                     "attributes": {
-                                                                        "class": "A26"
+                                                                        "class": "A26",
+                                                                        "data-selector": ".MuiCardHeader-content"
                                                                     },
                                                                     "childNodes": [
                                                                         {
                                                                             "nodeType": 1,
                                                                             "tagName": "SPAN",
                                                                             "attributes": {
-                                                                                "class": "A27"
+                                                                                "class": "A27",
+                                                                                "data-selector": ".MuiTypography-h5"
                                                                             },
                                                                             "childNodes": [
                                                                                 {
@@ -222,7 +251,8 @@
                                                             "nodeType": 1,
                                                             "tagName": "HR",
                                                             "attributes": {
-                                                                "class": "A29"
+                                                                "class": "A29",
+                                                                "data-selector": ".MuiDivider-root"
                                                             },
                                                             "childNodes": []
                                                         },
@@ -230,34 +260,40 @@
                                                             "nodeType": 1,
                                                             "tagName": "DIV",
                                                             "attributes": {
-                                                                "class": "A30"
+                                                                "class": "A30",
+                                                                "data-selector": ".MuiCardActions-root"
                                                             },
                                                             "childNodes": [
                                                                 {
                                                                     "nodeType": 1,
                                                                     "tagName": "BUTTON",
                                                                     "attributes": {
-                                                                        "class": "A31"
+                                                                        "class": "A31",
+                                                                        "data-selector": ".css-1rh9r0p-MuiButtonBase-root-MuiButton-root"
                                                                     },
                                                                     "childNodes": [
                                                                         {
                                                                             "nodeType": 1,
                                                                             "tagName": "SPAN",
                                                                             "attributes": {
-                                                                                "class": "A32"
+                                                                                "class": "A32",
+                                                                                "data-selector": ".MuiButton-startIcon"
                                                                             },
                                                                             "childNodes": [
                                                                                 {
                                                                                     "nodeType": 1,
                                                                                     "tagName": "svg",
                                                                                     "attributes": {
-                                                                                        "class": "A33"
+                                                                                        "class": "A33",
+                                                                                        "data-selector": ".MuiButton-startIcon > .MuiSvgIcon-root"
                                                                                     },
                                                                                     "childNodes": [
                                                                                         {
                                                                                             "nodeType": 1,
                                                                                             "tagName": "path",
-                                                                                            "attributes": {},
+                                                                                            "attributes": {
+                                                                                                "data-selector": ".MuiButton-startIcon path"
+                                                                                            },
                                                                                             "childNodes": []
                                                                                         }
                                                                                     ]
@@ -281,14 +317,16 @@
                                             "nodeType": 1,
                                             "tagName": "DIV",
                                             "attributes": {
-                                                "class": "A36"
+                                                "class": "A36",
+                                                "data-selector": ".MuiGrid2-root:nth-child(2)"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "DIV",
                                                     "attributes": {
-                                                        "class": "A37"
+                                                        "class": "A37",
+                                                        "data-selector": ".css-0"
                                                     },
                                                     "childNodes": [
                                                         {
@@ -296,7 +334,8 @@
                                                             "tagName": "H3",
                                                             "attributes": {
                                                                 "class": "A38",
-                                                                "id": "component-hsma-110-devs-status-list"
+                                                                "id": "component-hsma-110-devs-status-list",
+                                                                "data-selector": "#component-hsma-110-devs-status-list"
                                                             },
                                                             "childNodes": [
                                                                 {
@@ -310,21 +349,24 @@
                                                             "nodeType": 1,
                                                             "tagName": "SPAN",
                                                             "attributes": {
-                                                                "class": "A40"
+                                                                "class": "A40",
+                                                                "data-selector": ".MuiCircularProgress-root"
                                                             },
                                                             "childNodes": [
                                                                 {
                                                                     "nodeType": 1,
                                                                     "tagName": "svg",
                                                                     "attributes": {
-                                                                        "class": "A41"
+                                                                        "class": "A41",
+                                                                        "data-selector": ".MuiCircularProgress-svg"
                                                                     },
                                                                     "childNodes": [
                                                                         {
                                                                             "nodeType": 1,
                                                                             "tagName": "circle",
                                                                             "attributes": {
-                                                                                "class": "A42"
+                                                                                "class": "A42",
+                                                                                "data-selector": ".MuiCircularProgress-circle"
                                                                             },
                                                                             "childNodes": []
                                                                         }
@@ -342,20 +384,24 @@
                                     "nodeType": 1,
                                     "tagName": "DIV",
                                     "attributes": {
-                                        "class": "A43"
+                                        "class": "A43",
+                                        "data-selector": ".css-169zaeq"
                                     },
                                     "childNodes": [
                                         {
                                             "nodeType": 1,
                                             "tagName": "BUTTON",
                                             "attributes": {
-                                                "class": "A44"
+                                                "class": "A44",
+                                                "data-selector": ".css-12mxol5-MuiButtonBase-root-MuiButton-root"
                                             },
                                             "childNodes": [
                                                 {
                                                     "nodeType": 1,
                                                     "tagName": "IMG",
-                                                    "attributes": {},
+                                                    "attributes": {
+                                                        "data-selector": "img"
+                                                    },
                                                     "childNodes": []
                                                 }
                                             ]
@@ -363,7 +409,9 @@
                                         {
                                             "nodeType": 1,
                                             "tagName": "DIV",
-                                            "attributes": {},
+                                            "attributes": {
+                                                "data-selector": ".css-169zaeq > div"
+                                            },
                                             "childNodes": []
                                         }
                                     ]

@@ -3,7 +3,11 @@ import React, { useEffect } from 'react';
 import { domJSON } from '../truncate/filter';
 import { updateClassNames, ClassNameGenerator} from '../truncate/createMaps';
 
-const JsonConverter = () => {
+/**
+ * React-Component to convert the React-DOM to a JSON
+ */
+const JsonConverter = function() {
+  //useEffect to guarantee that the code is executed after the DOM is mounted
   useEffect(() => {
     // Function to execute code
     const runDomJSON = async () => {
@@ -17,7 +21,7 @@ const JsonConverter = () => {
         },
       });
 
-      //Hashmaps
+      //Assigning a key to every class and selector 
       let classMap = new Map<string, string>();
       let selectorMap = new Map<string, string>();
       const classNameGenerator = new ClassNameGenerator();
@@ -25,7 +29,7 @@ const JsonConverter = () => {
 
       // Output for testing
       console.log(codyJSON);
-      console.log(classMap);
+      //console.log(classMap);
       console.log(selectorMap);
     };
 

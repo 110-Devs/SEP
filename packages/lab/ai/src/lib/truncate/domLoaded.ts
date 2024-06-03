@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
 
+    /*Hashmap-Logik hier :) */  
     console.log(codyJSON);
 });
 

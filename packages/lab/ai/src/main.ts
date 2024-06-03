@@ -38,7 +38,9 @@ app.use(express.json());
  */
 app.post('/api/send-prompt', async (req, res) => {
   try {
+    const prefix = req.body.prefix;
     const prompt = req.body.prompt;
+    const newPrompt = prefix + "\n\n" + prompt;
     console.log(`Processing prompt: ${prompt}`);
 
     const response = await ollama.chat({
@@ -46,7 +48,7 @@ app.post('/api/send-prompt', async (req, res) => {
       messages: [
         {
           role: 'user',
-          content: prompt,
+          content: newPrompt,
         },
       ],
     });
