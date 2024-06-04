@@ -23,55 +23,53 @@ const ChatInputField = () => {
     if (inputField.current) inputField.current.value = '';
   };
 
-  //WIP
-  const modifyPrompt = async (): Promise<void> => {
-    console.log('Converting DOM to JSON...');
-
-    useEffect(() => {
-      const sendPrefix = async () => {
-        //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
-        const codyJSON = domJSON.toJSON(document.body, {
-          attributes: {
-            values: ['name', 'class', 'id', 'data-selector'],
-          },
-          domProperties: {
-            values: [],
-          },
-        });
-
-        //Assigning a key to every class and selector in two different Maps
-        let classMap = new Map<string, string>();
-        let selectorMap = new Map<string, string>();
-        const classNameGenerator = new ClassNameGenerator();
-        updateClassNames(codyJSON, classMap, selectorMap, classNameGenerator);
-
-        //Testing
-        console.log(codyJSON);
-        //console.log(classMap);
-        console.log(selectorMap);
-
-        //Sending the axios request
-        const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`; //Zur gleichen Adresse
-        try {
-          const response = await axios.post(API_URL, { prefix: codyJSON });
-          console.log(response.data);
-        } catch (error) {
-          console.error('Converting to JSON failed:', error);
-        }
-      };
-
-      // Execute the function
-      sendPrefix();
-    }, []);
-  };
-
   /**
-   * Sending the prompt
+   * Converting the current cody-DOM to JSON and sending the prompt with context
    */
   const sendPrompt = async (): Promise<void> => {
+    
+    //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
+    console.log('Converting DOM to JSON...')
+    
+    let codyJSON = domJSON.toJSON(document.body, {
+      attributes: {
+        values: ['name', 'class', 'id', 'data-selector'],
+      },
+      domProperties: {
+        values: [],
+      },
+    });
+    console.log('Converting successful!');
+
+    //Assigning a key to every class and selector in two different Maps
+    let classMap = new Map<string, string>();
+    let selectorMap = new Map<string, string>();
+    const classNameGenerator = new ClassNameGenerator();
+    updateClassNames(codyJSON, classMap, selectorMap, classNameGenerator);
+
+    //Testing
+    console.log(codyJSON);
+    //console.log(classMap);
+    console.log(selectorMap);
+
+    //Converting everything to String for the prompt
+    const jsonString = JSON.stringify(codyJSON);
+    let classString = '';
+    let selectorString = '';
+
+   /* //WIP Berke
+    for (const i in classMap) {
+      classString = i + '=>' + classMap[i] + '\n'
+    }
+
+    for (const j in selectorMap) {
+      selectorString = j + '=>' + selectorMap[j] + '\n'
+    }
+    */
+
     console.log('Processing prompt:', prompt);
 
-    const req = request({ prompt });
+    let req = jsonString + '\n\n' + request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
 
     try {
@@ -92,7 +90,9 @@ const ChatInputField = () => {
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
       />
-      <Button onClick={function(event){ modifyPrompt(); sendPrompt()}}>
+      <Button
+        onClick={ sendPrompt }
+      >
         <SendIcon />
       </Button>
     </InputContainer>

@@ -1740,7 +1740,9 @@ let selectorMap = new Map<string,string>;
 const classNameGenerator = new ClassNameGenerator();
 updateClassNames(htmlJson,classMap, selectorMap, classNameGenerator);
 
-
+/**
+ * Testing
+ */
 //console.log(JSON.stringify(htmlJson, null, 2));
-console.log(classMap);
-console.log(selectorMap);
+//console.log(classMap);
+//console.log(selectorMap);
