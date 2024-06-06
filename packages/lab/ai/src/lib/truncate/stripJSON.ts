@@ -42,8 +42,8 @@ export function updateClassNames(node: JsonNode,
     classMap: AssociativeArray = {},
     selectorMap: AssociativeArray = {},
 ): strippedJsonNode {
-
-    const newNode: any = { ...node, attributes: { ...node.attributes } };
+    // eslint-disable-next-line prefer-const
+    let newNode: any = { ...node, attributes: { ...node.attributes } };
     
     const currentNumber = classNameGenerator.generateClassName();
     const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);

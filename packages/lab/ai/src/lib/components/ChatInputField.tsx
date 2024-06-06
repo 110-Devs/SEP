@@ -6,8 +6,8 @@ import React, { useRef, useState } from 'react';
 import environment from '../environments/environment';
 import { request } from '../environments/modelConfig';
 import { InputContainer, InputField } from '../styles/ChatInputField.styles';
-import { domJSON } from '../truncate/filter';
-import { updateClassNames, ClassNameGenerator } from '../truncate/createMaps';
+import { domJSON } from '../truncate/domJSON';
+import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
 
 /**
  * Represents a chat input field component.
@@ -43,12 +43,12 @@ const ChatInputField = () => {
 
     //Assigning a key to every class and selector in two different Maps
     const classNameGenerator = new ClassNameGenerator();
-    const newNode: any = updateClassNames(codyJSON, classNameGenerator);
-    const classArr = newNode.classMap;
-    const selectorArr = newNode.selectorMap;
+    let newJSON: any = updateClassNames(codyJSON, classNameGenerator);
+    let classArr = newJSON.classMap;
+    let selectorArr = newJSON.selectorMap;
 
     //Testing
-    console.log(codyJSON);
+    console.log(newJSON.newNode);
     console.log(classArr);
     console.log(selectorArr);
 
@@ -58,14 +58,7 @@ const ChatInputField = () => {
     let selectorString = '';
 
     //WIP Berke
-    for (const i in classArr) {
-      classString = i + '=>' + classArr[i] + '\n'
-    }
-
-    for (const j in selectorArr) {
-      selectorString = j + '=>' + selectorArr[j] + '\n'
-    }
-    
+        
     //Testing
     //console.log(classString);
     //console.log(selectorString);

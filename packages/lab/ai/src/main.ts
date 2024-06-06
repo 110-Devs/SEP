@@ -4,7 +4,6 @@ import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: ollama } = require('ollama');
-import { domJSON } from './lib/truncate/filter';
 
 const app = express();
 const port = environment.PORT;
