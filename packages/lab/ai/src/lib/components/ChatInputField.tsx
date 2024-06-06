@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
@@ -7,7 +6,7 @@ import environment from '../environments/environment';
 import { request } from '../environments/modelConfig';
 import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import { domJSON } from '../truncate/domJSON';
-import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
+import { updateClassNames } from '../truncate/stripJSON';
 
 /**
  * Represents a chat input field component.
@@ -24,41 +23,28 @@ const ChatInputField = () => {
   };
 
   /**
-   * Converting the current cody-DOM to JSON and sending the prompt with context
+   * Converting the current cody-DOM to JSON and sending the prompt with context via axios
    */
   const sendPrompt = async (): Promise<void> => {
     
-    //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
-    console.log('Converting DOM to JSON...')
-    
-    let codyJSON = domJSON.toJSON(document.body, {
-      attributes: {
-        values: ['name', 'class', 'id', 'data-selector'],
-      },
-      domProperties: {
-        values: [],
-      },
-    });
+    //Converting Cody-DOM; toJSON(Node, FilterList)
+    const codyJSON = domJSON.toJSON(document.body);
     console.log('Converting successful!');
 
     //Assigning a key to every class and selector in two different Maps
-    const classNameGenerator = new ClassNameGenerator();
-    let newJSON: any = updateClassNames(codyJSON, classNameGenerator);
-    let classArr = newJSON.classMap;
-    let selectorArr = newJSON.selectorMap;
-
+    const newJSON = updateClassNames(codyJSON);
+    const classArr = newJSON.classMap;
+    const selectorArr = newJSON.selectorMap;
     //Testing
-    console.log(newJSON.newNode);
-    console.log(classArr);
-    console.log(selectorArr);
+    console.log(newJSON);
+    //console.log(classArr);
+    //console.log(selectorArr);
+
 
     //Converting everything to String for the prompt
-    const jsonString = JSON.stringify(codyJSON);
-    let classString = '';
-    let selectorString = '';
-
-    //WIP Berke
-        
+    const jsonString = JSON.stringify(newJSON); //WIP
+    const classString: string = JSON.stringify(classArr);
+    const selectorString: string = JSON.stringify(selectorArr);  
     //Testing
     //console.log(classString);
     //console.log(selectorString);
@@ -67,7 +53,7 @@ const ChatInputField = () => {
     console.log('Processing prompt:', prompt);
 
     //HIER WICHTIGE STRING KONKATENIERUNG
-    let req = jsonString + '\n\n' + request({ prompt });
+    const req = classString + '\n\n' + request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
 
     try {

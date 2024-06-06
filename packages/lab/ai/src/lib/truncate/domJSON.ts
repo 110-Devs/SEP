@@ -2,8 +2,9 @@ import { finder } from '@medv/finder';
 
 /* eslint-disable prefer-rest-params */
 /**
- * domJSON.js: A simple framework for converting DOM nodes to special JSON objects, and vice versa
- * Rewritten for TypeScript and removed module initialization. Import required to use the logic.
+ * domJSON.ts: A simple framework for converting DOM nodes to special JSON objects, and vice versa
+ * Rewritten for TypeScript and removed module initialization.
+ * This is normally a module form npm but rewritten and repurposed
  * 
  * @fileOverview
  * @author  Alex Zaslavsky, Ruben the G.O.A.T
@@ -32,11 +33,11 @@ export const domJSON: any = {};
  */
 const defaultsForToJSON = {
   absolutePaths: ['action', 'data', 'href', 'src'],
-  attributes: true,
+  attributes: { values: ['name', 'class', 'id', 'data-selector'] },
   computedStyle: false,
   cull: true,
   deep: true,
-  domProperties: true,
+  domProperties: { values: [] },
   filter: false,
   htmlOnly: false,
   metadata: true,

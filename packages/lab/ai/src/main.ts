@@ -3,11 +3,12 @@ import express from 'express';
 import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { default: ollama } = require('ollama');
+import ollama from 'ollama';
 
 const app = express();
 const port = environment.PORT;
 const model = environment.MODEL_NAME;
+//const modelName = "MillionDollarBaby";
 
 app.use(cors());
 app.use(express.json());
@@ -20,7 +21,6 @@ app.use(express.json());
   console.log(modelfile);
   try {
     await ollama.create({
-      name: model,
       model: model,
       modelfile: modelfile,
     });
@@ -37,9 +37,8 @@ app.use(express.json());
  */
 app.post('/api/send-prompt', async (req, res) => {
   try {
-    const prompt = req.body.prompt;
-    console.log(prompt);
-    console.log(`Processing prompt: ${prompt}`);
+    const prompt: string = req.body.prompt;
+    console.log(`Processing prompt in main: ` + prompt);
 
     const response = await ollama.chat({
       model: model,
@@ -51,6 +50,7 @@ app.post('/api/send-prompt', async (req, res) => {
       ],
     });
 
+    //eval(response.message.content);
     console.log(response.message.content);
     res.send(response.message.content);
   } catch (error) {

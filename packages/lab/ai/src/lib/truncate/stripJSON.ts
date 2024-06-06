@@ -6,12 +6,6 @@ interface JsonNode {
     nodeValue?: string;
 }
 
-interface strippedJsonNode {
-    newNode: JsonNode;
-    classMap: AssociativeArray,
-    selectorMap: AssociativeArray,
-}
-
 interface AssociativeArray {
     [key: string]: string
  }
@@ -37,14 +31,13 @@ export class ClassNameGenerator {
 }
 
 export function updateClassNames(node: JsonNode,
-    classNameGenerator: ClassNameGenerator,
+    classNameGenerator = new ClassNameGenerator(),
     parentSelector = '',
     classMap: AssociativeArray = {},
     selectorMap: AssociativeArray = {},
-): strippedJsonNode {
+) {
     // eslint-disable-next-line prefer-const
     let newNode: any = { ...node, attributes: { ...node.attributes } };
-    
     const currentNumber = classNameGenerator.generateClassName();
     const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);
 
