@@ -26,6 +26,7 @@ const ChatInputField = () => {
    * Sends the prompt to the server.
    */
   const sendPrompt = async (): Promise<void> => {
+
     //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
     console.log('Converting DOM to JSON...');
 
@@ -78,6 +79,7 @@ const ChatInputField = () => {
         ${jsonString}
       ${req}`,
       });
+
       console.log(response.data);
       setPrompt('');
       clearInput();
