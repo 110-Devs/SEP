@@ -15,8 +15,6 @@ app.use(express.json());
  * Function to create the model.
  */
 (async function () {
-  console.log(environment);
-  console.log(modelfile);
   try {
     await ollama.create({
       name: model,
