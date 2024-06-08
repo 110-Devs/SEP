@@ -10,7 +10,7 @@ import {useUser} from "@frontend/hooks/use-user";
 import {usePageData} from "@frontend/hooks/use-page-data";
 import {makeButtonSx} from "@frontend/app/layout/Sidebar";
 import {Tab} from "@frontend/app/pages/page-definitions";
-
+import { SnapToGrid } from "@cody-engine/lab/dnd";
 
 
 interface OwnProps {
@@ -98,7 +98,8 @@ const CommandBar = (props: CommandBarProps) => {
       minWidth: "160px"
     }
   }}>
-    {props.children}
+    <SnapToGrid children={props.children}/>
+    {/* {props.children} */}
   </CardActions>;
 
   return <>
@@ -117,7 +118,7 @@ const CommandBar = (props: CommandBarProps) => {
     } : {
       width: 'auto',
     }}>
-      {!fixed && (props.tabs ? renderTabs(props.tabs, user, pageData, theme) : <CardHeader title="Actions"/>)}
+      {!fixed && (props.tabs ? renderTabs(props.tabs, user, pageData, theme) : <SnapToGrid children={<CardHeader title="Actions" />} />)}
       {!fixed && <Divider/>}
       {cardActions}
     </Card>
