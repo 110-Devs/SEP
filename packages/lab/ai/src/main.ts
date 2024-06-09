@@ -24,8 +24,22 @@ app.use(express.json());
       modelfile: modelfile,
     });
     console.log('Model created successfully.');
-  } catch (error) {
-    console.error('Error creating the model:', error);
+  } catch (error: any) {
+    const redColor = '\x1b[31m';
+    const resetColor = '\x1b[0m';
+
+    if (error.cause && error.cause.code === 'ECONNREFUSED') {
+      console.error(
+        `${redColor}Error: Unable to connect to Ollama server.${resetColor}`
+      );
+      console.error(
+        `${redColor}Please make sure the Ollama server is running.${resetColor}`
+      );
+    } else {
+      console.error(
+        `${redColor}Error creating the model: ${error}${resetColor}`
+      );
+    }
   }
 })();
 

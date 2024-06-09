@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.draggableButton {
+  visibility: hidden;
+}
+
+.container:hover .draggableButton {
+  visibility: visible;
+}
