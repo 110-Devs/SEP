@@ -8,6 +8,7 @@ import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import { domJSON } from '../truncate/filter';
 import { updateClassNames, ClassNameGenerator } from '../truncate/createMaps';
 
+
 /**
  * Represents a chat input field component.
  */
@@ -26,7 +27,6 @@ const ChatInputField = () => {
    * Sends the prompt to the server.
    */
   const sendPrompt = async (): Promise<void> => {
-
     //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
     console.log('Converting DOM to JSON...');
 
@@ -68,7 +68,7 @@ const ChatInputField = () => {
     //Testing
     //console.log(classString);
     //console.log(selectorString);
-
+        
     console.log('Processing prompt:', prompt);
     const req = request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
@@ -79,7 +79,6 @@ const ChatInputField = () => {
         ${jsonString}
       ${req}`,
       });
-
       console.log(response.data);
       setPrompt('');
       clearInput();
