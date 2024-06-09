@@ -1,3 +1,4 @@
+// script.ts
 interface JsonNode {
     nodeType?: number;
     tagName?: string;
@@ -5,16 +6,6 @@ interface JsonNode {
     childNodes?: JsonNode[];
     nodeValue?: string;
 }
-
-interface strippedJsonNode {
-    newNode: JsonNode;
-    classMap: AssociativeArray,
-    selectorMap: AssociativeArray,
-}
-
-interface AssociativeArray {
-    [key: string]: string
- }
 
 export class ClassNameGenerator {
 
@@ -36,34 +27,32 @@ export class ClassNameGenerator {
     }
 }
 
-export function updateClassNames(node: JsonNode,
-    classNameGenerator: ClassNameGenerator,
-    parentSelector = '',
-    classMap: AssociativeArray = {},
-    selectorMap: AssociativeArray = {},
-): strippedJsonNode {
 
-    const newNode: any = { ...node, attributes: { ...node.attributes } };
-    
+export function updateClassNames(node: JsonNode,
+    classMap: Map<string, string>,
+    selectorMap: Map<string, string>,
+    classNameGenerator: ClassNameGenerator,
+    parentSelector = ''
+): void {
+
+
     const currentNumber = classNameGenerator.generateClassName();
     const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);
 
 
-    if (newNode.attributes && newNode.attributes.class) {
-        classMap[currentNumber] = newNode.attributes.class;
-        selectorMap[currentNumber] = currentSelector;
-        newNode.attributes.class = currentNumber;
+    if (node.attributes && node.attributes.class) {
+        classMap.set(currentNumber, node.attributes.class);
+        selectorMap.set(currentNumber,currentSelector);
+        node.attributes.class = currentNumber;
+
     }
 
     if (node.childNodes) {
-        for (const child of newNode.childNodes) {
-            updateClassNames(child, classNameGenerator, currentSelector, classMap, selectorMap);
+        for (const child of node.childNodes) {
+            updateClassNames(child, classMap, selectorMap, classNameGenerator);
         }
     }
-
-    return {newNode, classMap, selectorMap};
 }
-
 
 function getSelectorString(node: JsonNode, path: string[] = []): string {
     let selector: any = node.tagName;
