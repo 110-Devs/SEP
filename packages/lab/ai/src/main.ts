@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
+import { replaceString } from './lib/evaluate/replaceString';
 const { default: ollama } = require('ollama');
 
 const app = express();
@@ -50,7 +51,8 @@ app.use(express.json());
  */
 app.post('/api/send-prompt', async (req, res) => {
   try {
-    const prompt = req.body.prompt;
+    const prompt: string = req.body.prompt;
+    //const selectors: Map<string, string> = req.body.map;
     console.log(`Processing prompt: ${prompt}`);
 
     const response = await ollama.chat({
@@ -63,8 +65,12 @@ app.post('/api/send-prompt', async (req, res) => {
       ],
     });
 
-    console.log(response.message.content);
+    //const newTask = replaceString(selectors, response.message.content);
+    //console.log(newTask);
+
+    //const newTask = "(function doTask() { const addStatusButton = document.querySelector('.MuiButtonBase-root > MuiButton-root > MuiButton-contained > MuiButton-containedPrimary > MuiButton-sizeMedium > MuiButton-containedSizeMedium > MuiButton-root > MuiButton-contained > MuiButton-containedPrimary > MuiButton-sizeMedium > MuiButton-containedSizeMedium > css-1rh9r0p-MuiButtonBase-root-MuiButton-root'); addStatusButton.style.backgroundColor = 'green'; })()";
     res.send(response.message.content);
+
   } catch (error) {
     console.error('Error processing the prompt:', error);
     res.status(500).send('Error processing the prompt.');

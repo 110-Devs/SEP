@@ -55,14 +55,15 @@ export function updateClassNames(node: JsonNode,
 }
 
 function getSelectorString(node: JsonNode, path: string[] = []): string {
-    let selector: any = node.tagName;
+    //let selector: any = node.tagName;
+    let selector = '';
 
     if (node.attributes) {
         if (node.attributes.id) {
             selector += `#${node.attributes.id}`;
         }
         if (node.attributes.class) {
-            const classes = node.attributes.class.split(' ').join('.');
+            const classes = node.attributes.class.split(' ').join(' > ');
             selector += `.${classes}`;
         }
     }
