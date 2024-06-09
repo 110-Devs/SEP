@@ -5,6 +5,7 @@ import CommandBar from "@frontend/app/layout/CommandBar";
 import {loadCommandComponent} from "@frontend/util/components/load-command-components";
 import {loadViewComponent} from "@frontend/util/components/load-view-components";
 import {PageRegistry, pages} from "@frontend/app/pages/index";
+import {Sortable} from "@cody-engine/lab/dnd"
 
 interface Props {
   page: PageDefinition
@@ -42,7 +43,8 @@ export const StandardPage = (props: Props) => {
   });
 
   return <Grid2 container={true} spacing={3}>
-    {commandBar}
-    {components}
+    {/* {commandBar}
+    {components} */}
+    <Sortable route={props.page.route} children={[commandBar, components]}/>
   </Grid2>
 }

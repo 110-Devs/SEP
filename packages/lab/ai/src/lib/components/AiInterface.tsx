@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
-import ChatInputFlied from './ChatInputField';
 import ChatToggleButton from './ChatToggleButton';
+import ChatWindow from './ChatWindow';
 
 /**
  * Renders the AI interface component.
@@ -23,7 +23,7 @@ const AiInterface: React.FC = () => {
         toggleChatInputBox={toggleChatInputBox}
         chatInputBoxIsShown={chatInputBoxIsShown}
       />
-      {chatInputBoxIsShown && <ChatInputFlied />}
+      {chatInputBoxIsShown && <ChatWindow />}
     </InterfaceContainer>
   );
 };

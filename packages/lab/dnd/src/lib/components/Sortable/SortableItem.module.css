@@ -1,0 +1,16 @@
+.sortableItem {
+    position: relative;
+  }
+  
+  .draggableButtonWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .sortableItem:hover .draggableButtonWrapper {
+    opacity: 1;
+  }
+  
