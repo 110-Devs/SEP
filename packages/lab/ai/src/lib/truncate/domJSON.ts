@@ -33,7 +33,7 @@ export const domJSON: any = {};
  */
 const defaultsForToJSON = {
   absolutePaths: ['action', 'data', 'href', 'src'],
-  attributes: { values: ['name', 'class', 'id', 'data-selector'] },
+  attributes: { values: ['name', 'class', 'data-selector'] },
   computedStyle: false,
   cull: true,
   deep: true,
@@ -58,7 +58,7 @@ const banned = ['link', 'script', 'style']; //Consider (maybe) adding the follow
  * @private
  * @ignore
  */
-const required = ['nodeType', 'nodeValue', 'tagName'];
+const required = ['nodeValue', 'tagName'];
 
 /**
  * A list of node properties to specifically avoid simply copying; there is no user option that will allow these to be copied directly
@@ -415,7 +415,7 @@ const attrJSON = function (node: any, opts: any) {
 
   //Author: Ruben a.k.a the GOAT
   //Inserting custom attribute "data-selector" with the selector of the element as the value.
-  //attributes['data-selector'] = finder(node);
+  attributes['data-selector'] = finder(node);
 
   attributes = opts.attributes ? boolFilter(attributes, opts.attributes) : null;
 
