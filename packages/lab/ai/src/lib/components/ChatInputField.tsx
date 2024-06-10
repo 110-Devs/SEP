@@ -34,30 +34,16 @@ const ChatInputField = () => {
       attributes: ['name', 'class'],
       domProperties: [],
     });
-    console.log('Converting successful!');
 
-    //Assigning a key to every class and selector in two different Maps //Jetzige Implementierung mit Seiteneffekten; WIP Berke
+    //Assigning a key to every class and selector in two different associative Arrays
     const classNameGenerator = new ClassNameGenerator();
     const newJSON = updateClassNames(selectorJSON, classNameGenerator);
     const anotherGenerator = new ClassNameGenerator()
-    const lmao = updateClassNames(codyJSON, anotherGenerator);
-
-    //Testing
-    //console.log(codyJSON);
-    //console.log(newJSON.classMap);
-    //console.log(newJSON.selectorMap);
-    //console.log(newJSON.newNode);
-    console.log(newJSON.selectorMap);
-    console.log(lmao.selectorMap);
-    console.log(lmao.newNode);
-    
+    const withoutSelectorJSON = updateClassNames(codyJSON, anotherGenerator); // JSON without data-selector attribute
     //Converting everything to String for the prompt
-    const jsonString = JSON.stringify(lmao.newNode);
+    const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    //User-Prompt
     console.log('Processing prompt:', prompt);
-
-    //HIER WICHTIGE STRING KONKATENIERUNG
     const req = request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
 
@@ -72,9 +58,8 @@ const ChatInputField = () => {
     
       //Automatic execution of the method. 
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
-      console.log(newTask);
       eval("(" + newTask + ")()");
-      //eval("(function doTask() { const addStatusButton = document.querySelector('#root > div > main > div.MuiGrid2-root.MuiGrid2-container.MuiGrid2-direction-xs-row.MuiGrid2-spacing-xs-3.css-1ynoxbp-MuiGrid2-root > div:nth-child(1) > div:nth-child(1) > div.MuiGrid2-root.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-12.css-1wztgj9-MuiGrid2-root > div > div.MuiCardActions-root.MuiCardActions-spacing.css-i0umbk-MuiCardActions-root > div.Wrapper_Wrapper__77rI4 > div > div > div:nth-child(2) > button'); addStatusButton.style.backgroundColor = 'green'; })()");
+
       setPrompt('');
       clearInput();
     } catch (error) {

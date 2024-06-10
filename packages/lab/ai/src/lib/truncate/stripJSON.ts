@@ -67,7 +67,6 @@ export function updateClassNames(node: JsonNode,
 
 
 function getSelectorString(node: JsonNode): string {
-    //let selector = node.tagName;
     let selector = '';
 
     if (node.attributes) {
