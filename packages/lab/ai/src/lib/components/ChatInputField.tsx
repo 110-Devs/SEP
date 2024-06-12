@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
@@ -5,9 +6,9 @@ import React, { useRef, useState } from 'react';
 import environment from '../environments/environment';
 import { request } from '../environments/modelConfig';
 import { InputContainer, InputField } from '../styles/ChatInputField.styles';
-import { domJSON } from '../truncate/filter';
-import { updateClassNames, ClassNameGenerator } from '../truncate/createMaps';
-
+import { domJSON } from '../truncate/domJSON';
+import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
+import { adjustTask } from '../evaluate/adjustTask';
 
 /**
  * Represents a chat input field component.
@@ -24,51 +25,24 @@ const ChatInputField = () => {
   };
 
   /**
-   * Sends the prompt to the server.
+   * Converting the current cody-DOM to JSON and sending the prompt with context via axios
    */
   const sendPrompt = async (): Promise<void> => {
-    //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
-    console.log('Converting DOM to JSON...');
-
-    let codyJSON = domJSON.toJSON(document.querySelector('main'), {
-      attributes: {
-        values: ['name', 'class', 'id', 'data-selector'],
-      },
-      domProperties: {
-        values: [],
-      },
+    //Converting Cody-DOM; toJSON(Node, FilterList)
+    const selectorJSON = domJSON.toJSON(document.body);
+    const codyJSON = domJSON.toJSON(document.body, {
+      attributes: ['name', 'class'],
+      domProperties: [],
     });
-    console.log('Converting successful!');
 
-    //Assigning a key to every class and selector in two different Maps
+    //Assigning a key to every class and selector in two different associative Arrays
     const classNameGenerator = new ClassNameGenerator();
-    const newNode: any = updateClassNames(codyJSON, classNameGenerator);
-    const classArr = newNode.classMap;
-    const selectorArr = newNode.selectorMap;
-
-    //Testing
-    console.log(codyJSON);
-    console.log(classArr);
-    console.log(selectorArr);
-
+    const newJSON = updateClassNames(selectorJSON, classNameGenerator);
+    const anotherGenerator = new ClassNameGenerator()
+    const withoutSelectorJSON = updateClassNames(codyJSON, anotherGenerator); // JSON without data-selector attribute
     //Converting everything to String for the prompt
-    const jsonString = JSON.stringify(codyJSON);
-    let classString = '';
-    let selectorString = '';
+    const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    //WIP Berke
-    for (const i in classArr) {
-      classString = i + '=>' + classArr[i] + '\n';
-    }
-
-    for (const j in selectorArr) {
-      selectorString = j + '=>' + selectorArr[j] + '\n';
-    }
-
-    //Testing
-    //console.log(classString);
-    //console.log(selectorString);
-        
     console.log('Processing prompt:', prompt);
     const req = request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
@@ -76,10 +50,16 @@ const ChatInputField = () => {
     try {
       const response = await axios.post(API_URL, {
         prompt: `
-        ${jsonString}
-      ${req}`,
+        JSON representation:
+        ${jsonString} \n
+        ${req}`,
       });
       console.log(response.data);
+    
+      //Automatic execution of the method. 
+      const newTask: string = adjustTask(newJSON.selectorMap, response.data);
+      eval("(" + newTask + ")()");
+
       setPrompt('');
       clearInput();
     } catch (error) {
