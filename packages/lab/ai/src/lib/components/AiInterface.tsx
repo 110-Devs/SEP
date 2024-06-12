@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InterfaceContainer } from '../styles/AiInterface.styles';
 import ChatToggleButton from './ChatToggleButton';
-import ChatWindow from './ChatWindow';
+import ChatWindow from '../../../../fe/src/lib/components/ChatWindow';
 
 /**
  * Renders the AI interface component.

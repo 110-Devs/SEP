@@ -83,10 +83,7 @@
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.1",
-<<<<<<< HEAD
     "@material-ui/core": "^4.12.4",
-=======
->>>>>>> upstream/frontend
     "@medv/finder": "^3.2.0",
     "@monaco-editor/react": "^4.5.2",
     "@mui/icons-material": "^5.11.16",

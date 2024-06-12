@@ -8,7 +8,7 @@ import Psychology from '@mui/icons-material/Psychology';
 import Build from '@mui/icons-material/build';
 import Tab from '@mui/icons-material/tab';
 import DragDropOptions from './drag-drop/DragDropOptions';
-import ChatInputField from './ChatInputField';
+import ChatWindow from './ChatWindow';
 import EditIcon from '@mui/icons-material/memory';
 import TemplatesOverlay from './template/TemplatesOverlay';
 
@@ -69,7 +69,7 @@ export default function PlaygroundSpeedDial() {
       {rangeSliderIsOpen && (
         <DragDropOptions onClose={toggleRangeSliderWindow} />
       )}
-      {chatInputBoxIsShown && <ChatInputField />}
+      {chatInputBoxIsShown && <ChatWindow />}
       {templatesIsOpen && <TemplatesOverlay onClose={toggleTemplatesOverlay} />}
     </React.Fragment>
   );

@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect, ChangeEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
-import { request } from '../environments/modelConfig';
 import environment from '../environments/environment';
+import { request } from '../environments/modelConfig';
 import {
   RootContainer,
   MessageList,
@@ -16,17 +16,19 @@ import {
   HeaderIcon,
   HeaderTitle
 } from '../styles/ChatWindow.styles'; // Import styled components
-import { domJSON } from '../truncate/domJSON';
-import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
+import { domJSON } from '../../../../ai/src/lib/truncate/domJSON';
+import { updateClassNames, ClassNameGenerator } from '../../../../ai/src/lib/truncate/stripJSON';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
 
+//TODO: Konvertierung aus ChatInputField zu CHatWindow übertragen 
 const ChatWindow = () => {
   const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
   const inputField = useRef<HTMLInputElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
@@ -80,6 +82,7 @@ const ChatWindow = () => {
         clearInterval(typingInterval);
         setIsTyping(false);
         setMessages(prevMessages => [...prevMessages, { content: message, isUser: false }]);
+        setCurrentResponse('');
         if (lastMessageRef.current) {
           lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
@@ -133,12 +136,15 @@ const ChatWindow = () => {
 
       setTimeout(() => {
         simulateTyping("Alright, give me a few seconds to process your given task");
-        setTimeout(() => {
+        setIsProcessing(true); // Show the typing indicator for processing
+
+        setTimeout(async () => {
+          await sendPrompt(userPrompt);
+          setIsProcessing(false); // Hide the typing indicator after processing
+
           simulateTyping("Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice");
         }, 4000);
       }, 1000);
-
-      await sendPrompt(userPrompt);
 
       inputField.current?.focus();
       setPlaceholder(getRandomPrompt());
@@ -164,6 +170,7 @@ const ChatWindow = () => {
           </div>
         ))}
         {isTyping && <AIMessage>{currentResponse}</AIMessage>}
+        {isProcessing && <TypingIndicator />}
       </MessageList>
       <TextInputContainer>
         <TextField
