@@ -12,7 +12,7 @@ type requestProps = {
  * @param {requestProps} props - The request properties.
  * @returns {string} - The generated request string.
  */
-export const request = ({ prompt }: requestProps): string => {
+export const modifiedRequest = ({ prompt }: requestProps): string => {
   return `
   ${environment.SYSTEM_PROMPT}
 

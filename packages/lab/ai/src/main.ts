@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
+import axios from 'axios';
 const { default: ollama } = require('ollama');
 
 const app = express();
@@ -51,25 +52,22 @@ app.use(express.json());
 app.post('/api/send-prompt', async (req, res) => {
   try {
     const prompt: string = req.body.prompt;
-    //const selectors: Map<string, string> = req.body.map;
     console.log(`Processing prompt: ${prompt}`);
 
-    const response = await ollama.chat({
-      model: model,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-    });
+    const API_URL = "https://f4359ba8-80fc-455d-a8e6-fad069f30239.app.gra.ai.cloud.ovh.net/api/generate";
+    const data = { model: 'codestral', prompt: req.body.prompt, stream: false };
+    const header = {
+      headers: {
+        Authorization: `Bearer ${environment.TOKEN}`,
+      },
+    };
 
-    //const newTask = replaceString(selectors, response.message.content);
+    const response = await axios.post(API_URL, data, header);
+
     //console.log(newTask);
 
-    //const newTask = "(function doTask() { const addStatusButton = document.querySelector('.MuiButtonBase-root > MuiButton-root > MuiButton-contained > MuiButton-containedPrimary > MuiButton-sizeMedium > MuiButton-containedSizeMedium > MuiButton-root > MuiButton-contained > MuiButton-containedPrimary > MuiButton-sizeMedium > MuiButton-containedSizeMedium > css-1rh9r0p-MuiButtonBase-root-MuiButton-root'); addStatusButton.style.backgroundColor = 'green'; })()";
-    console.log(response.message.content);
-    res.send(response.message.content);
+    console.log("This is the response: " + response.data.response);
+    res.send(response.data.response);
 
   } catch (error) {
     console.error('Error processing the prompt:', error);

@@ -9,7 +9,7 @@ export function adjustTask(
   selectorArr: { [key: string]: string },
   doTask: string
 ) {
-  const codeIdentifier = /^```javascript\s*([\s\S]*?)\s*```$/i; // Get only the code string
+  const codeIdentifier = /.*```javascript\s*([\s\S]*?)\s*```.*/; // Get only the code string
   const classIdentifier = /\.?[A-Z][0-9]{2}/g; // Get only the replaced class
   const match = doTask.match(codeIdentifier);
 
