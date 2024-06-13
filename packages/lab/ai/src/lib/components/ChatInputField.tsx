@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import { domJSON } from '../truncate/filter';
 import { updateClassNames, ClassNameGenerator } from '../truncate/createMaps';
 
+//TODO: Konvertierung aus ChatInputField zu CHatWindow übertragen 
 
 /**
  * Represents a chat input field component.
@@ -24,7 +26,7 @@ const ChatInputField = () => {
   };
 
   /**
-   * Sends the prompt to the server.
+   * Converting the current cody-DOM to JSON and sending the prompt with context via axios
    */
   const sendPrompt = async (): Promise<void> => {
     //Umwandlung der Cody-DOM; toJSON(Node, FilterList)
@@ -70,6 +72,8 @@ const ChatInputField = () => {
     //console.log(selectorString);
         
     console.log('Processing prompt:', prompt);
+
+    //HIER WICHTIGE STRING KONKATENIERUNG
     const req = request({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
 
