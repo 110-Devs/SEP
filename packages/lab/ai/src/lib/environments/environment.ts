@@ -2,6 +2,12 @@
  * Represents the environment configuration for the application.
  */
 const environment = {
+
+  /**
+   * Authorization for requests to the AI server
+   */
+  TOKEN: 'w3WcLmczSkWMsvA5gAVi0AmKyumzqAKqlRDb5ndR6gLUrB+lJcqJQ2+I27i4PZ21',
+
   /**
    * The port on which the application will run.
    */
