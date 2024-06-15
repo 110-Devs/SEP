@@ -2,9 +2,9 @@ import { finder } from '@medv/finder';
 
 /* eslint-disable prefer-rest-params */
 /**
- * domJSON.ts: A simple framework for converting DOM nodes to special JSON objects, and vice versa
- * Rewritten for TypeScript and removed module initialization.
- * This is normally a module form npm but rewritten and repurposed
+ * domJSON.js: A simple framework for converting DOM nodes to special JSON objects, and vice versa
+ * Rewritten for TypeScript and simplified for project purposes.
+ * This is normally a module from npm but rewritten and repurposed
  * 
  * @fileOverview
  * @author  Alex Zaslavsky, Ruben the G.O.A.T
@@ -13,7 +13,7 @@ import { finder } from '@medv/finder';
  */
 
 /**
- * domJSON is a global variable to store two methods: `.toJSON()` to convert a DOM Node into a JSON object, and `.toDOM()` to turn that JSON object back into a DOM Node
+ * domJSON is a global variable to store two methods: `.toJSON()` to convert a DOM Node into a JSON object. The only export of the file
  * @namespace domJSON
  * @global
  */
@@ -33,7 +33,7 @@ export const domJSON: any = {};
  */
 const defaultsForToJSON = {
   absolutePaths: ['action', 'data', 'href', 'src'],
-  attributes: { values: ['name', 'class', 'id', 'data-selector'] },
+  attributes: { values: ['name', 'class', 'data-selector'] },
   computedStyle: false,
   cull: true,
   deep: true,
@@ -51,14 +51,14 @@ const defaultsForToJSON = {
  * @private
  * @ignore
  */
-const banned = ['link', 'script']; //Consider (maybe) adding the following tags: iframe, html, audio, video, object
+const banned = ['link', 'script', 'style']; //Consider (maybe) adding the following tags: iframe, html, audio, video, object
 
 /**
  * A list of node properties that must be copied if they exist; there is no user option that will remove these
  * @private
  * @ignore
  */
-const required = ['nodeType', 'nodeValue', 'tagName'];
+const required = ['nodeValue', 'tagName'];
 
 /**
  * A list of node properties to specifically avoid simply copying; there is no user option that will allow these to be copied directly
@@ -415,7 +415,7 @@ const attrJSON = function (node: any, opts: any) {
 
   //Author: Ruben a.k.a the GOAT
   //Inserting custom attribute "data-selector" with the selector of the element as the value.
-  //attributes['data-selector'] = finder(node);
+  attributes['data-selector'] = finder(node);
 
   attributes = opts.attributes ? boolFilter(attributes, opts.attributes) : null;
 
