@@ -9,7 +9,6 @@ import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import { domJSON } from '../truncate/domJSON';
 import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
 import { adjustTask } from '../evaluate/adjustTask';
-import { hostname } from 'os';
 
 /**
  * Represents a chat input field component.
