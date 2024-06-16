@@ -25,7 +25,7 @@ import ErrorBoundary from "@frontend/app/components/core/ErrorBoundary";
 import AiInterface from "packages/lab/fe/src/lib/components/AiInterface";
 
 export function App() {
-  const Layout = (props: React.PropsWithChildren) => {
+  const Layout = (props: React.PropsWithChildren<Record<never, any>>) => {
     return <>
       <User>
         <PageDataProvider>

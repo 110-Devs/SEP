@@ -2,8 +2,8 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import React, { useRef, useState } from 'react';
-import environment from '../environments/environment';
-import { request } from '../environments/modelConfig';
+import environment from '@ai/src/lib/environments/environment';
+import { modifiedRequest } from '@ai/src/lib/environments/modelConfig';
 import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import CheckIcon from '@mui/icons-material/AutorenewOutlined';
 /**
@@ -30,7 +30,7 @@ const ChatInputField = () => {
    */
   const sendPrompt = async (): Promise<void> => {
     console.log('Processing prompt:', prompt);
-    const req = request({ prompt });
+    const req = modifiedRequest({ prompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
 
     try {

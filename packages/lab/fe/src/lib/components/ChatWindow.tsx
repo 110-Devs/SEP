@@ -148,7 +148,7 @@ const ChatWindow = () => {
         setIsProcessing(true); // Show the typing indicator for processing
 
         setTimeout(async () => {
-          await sendPrompt(userPrompt);
+          await sendPrompt();
           setIsProcessing(false); // Hide the typing indicator after processing
 
           simulateTyping("Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice");
