@@ -17,7 +17,7 @@ interface OwnProps {
   tabs?: Tab[];
 }
 
-type CommandBarProps = OwnProps & PropsWithChildren;
+type CommandBarProps = OwnProps & PropsWithChildren<Record<never, any>>;
 
 type TabConfig = {
   disabled: boolean,

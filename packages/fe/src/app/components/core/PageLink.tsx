@@ -8,7 +8,7 @@ interface OwnProps {
   params?: Record<string, any>,
 }
 
-type PageLinkProps = OwnProps & PropsWithChildren;
+type PageLinkProps = OwnProps & PropsWithChildren<Record<never, any>>;
 
 const PageLink = (props: PageLinkProps) => {
   let path = '/';

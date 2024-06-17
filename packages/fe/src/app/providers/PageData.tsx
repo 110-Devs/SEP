@@ -9,7 +9,7 @@ interface OwnProps {
 
 }
 
-type PageDataProviderProps = OwnProps & PropsWithChildren;
+type PageDataProviderProps = OwnProps & PropsWithChildren<Record<never, any>>;
 
 
 export const PageDataContext = React.createContext({
