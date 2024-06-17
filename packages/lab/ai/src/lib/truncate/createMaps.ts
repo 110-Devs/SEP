@@ -43,38 +43,42 @@ export function updateClassNames(node: JsonNode,
     selectorMap: AssociativeArray = {},
 ): strippedJsonNode {
 
-    const newNode = { ...node, attributes: { ...node.attributes } };
+    const newNode: any = { ...node, attributes: { ...node.attributes } };
     
-    let currentNumber = '';
-    const currentSelector = getSelectorString(node);
+    const currentNumber = classNameGenerator.generateClassName();
+    const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);
 
 
     if (newNode.attributes && newNode.attributes.class) {
-        currentNumber = classNameGenerator.generateClassName();
         classMap[currentNumber] = newNode.attributes.class;
         selectorMap[currentNumber] = currentSelector;
         newNode.attributes.class = currentNumber;
     }
 
-    if (newNode.childNodes) {
-        newNode.childNodes = newNode.childNodes.map(child =>
-            updateClassNames(child, classNameGenerator, currentSelector, classMap, selectorMap).newNode
-        );
+    if (node.childNodes) {
+        for (const child of newNode.childNodes) {
+            updateClassNames(child, classNameGenerator, currentSelector, classMap, selectorMap);
+        }
     }
 
     return {newNode, classMap, selectorMap};
 }
 
 
-function getSelectorString(node: JsonNode): string {
-    let selector = '';
+function getSelectorString(node: JsonNode, path: string[] = []): string {
+    let selector: any = node.tagName;
 
     if (node.attributes) {
-        if (node.attributes['data-selector']) {
-            selector = node.attributes['data-selector'];
+        if (node.attributes.id) {
+            selector += `#${node.attributes.id}`;
+        }
+        if (node.attributes.class) {
+            const classes = node.attributes.class.split(' ').join('.');
+            selector += `.${classes}`;
         }
     }
 
-    return selector;
-}
+    path.push(selector);
 
+    return path.join(' > ');
+}

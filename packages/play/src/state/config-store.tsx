@@ -170,7 +170,7 @@ const clearAfterDispatchListener = (): void => {
 
 let currentDispatch: any;
 
-const PlayConfigProvider = (props: PropsWithChildren) => {
+const PlayConfigProvider = (props: PropsWithChildren<Record<never, any>>) => {
   const [user, ] = useUser();
   const [config, dispatch] = useReducer((config: CodyPlayConfig, action: Action): CodyPlayConfig => {
     console.log(`[PlayConfigStore] Going to apply action: `, action);
