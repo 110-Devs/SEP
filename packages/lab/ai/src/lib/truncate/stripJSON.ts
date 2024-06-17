@@ -10,8 +10,6 @@ interface AssociativeArray {
     [key: string]: string
  }
 
-//.MuiGrid-container
-
 export class ClassNameGenerator {
 
     private currentNumber = 0;
@@ -24,10 +22,6 @@ export class ClassNameGenerator {
             this.currentNumber = 1;
             this.currentLetter = String.fromCharCode(this.currentLetter.charCodeAt(0) + 1);
         }
-        return this.currentLetter + this.currentNumber.toString().padStart(2,'0');
-    }
-
-    public getCurrentNumber() {
         return this.currentLetter + this.currentNumber.toString().padStart(2,'0');
     }
 
