@@ -34,8 +34,8 @@ export function App() {
               <MainLayout>
                 <ScrollToTop />
                 <Outlet />
-                <AiInterface />
               </MainLayout>
+              <AiInterface />
             </SnackbarProvider>
           </ToggleColorMode>
         </PageDataProvider>

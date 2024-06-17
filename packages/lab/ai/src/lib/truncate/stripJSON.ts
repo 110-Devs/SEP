@@ -6,15 +6,11 @@ interface JsonNode {
     nodeValue?: string;
 }
 
-interface strippedJsonNode {
-    newNode: JsonNode;
-    classMap: AssociativeArray,
-    selectorMap: AssociativeArray,
-}
-
 interface AssociativeArray {
     [key: string]: string
  }
+
+//.MuiGrid-container
 
 export class ClassNameGenerator {
 
@@ -31,6 +27,10 @@ export class ClassNameGenerator {
         return this.currentLetter + this.currentNumber.toString().padStart(2,'0');
     }
 
+    public getCurrentNumber() {
+        return this.currentLetter + this.currentNumber.toString().padStart(2,'0');
+    }
+
     public generateClassName(): string {
         return this.getNextNumber();
     }
@@ -41,13 +41,14 @@ export function updateClassNames(node: JsonNode,
     parentSelector = '',
     classMap: AssociativeArray = {},
     selectorMap: AssociativeArray = {},
-): strippedJsonNode {
-
-    const newNode = { ...node, attributes: { ...node.attributes } };
-    
+) {
+    const newNode = { ...node, attributes: { ...node.attributes } }; 
     let currentNumber = '';
     const currentSelector = getSelectorString(node);
 
+    if (currentSelector == '.MuiGrid-container') {
+        return {newNode, classMap, selectorMap};
+    }
 
     if (newNode.attributes && newNode.attributes.class) {
         currentNumber = classNameGenerator.generateClassName();
