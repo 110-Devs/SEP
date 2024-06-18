@@ -143,8 +143,6 @@ const ChatWindow = () => {
       console.log(newTask);
       eval('(' + newTask + ')()');
 
-      //setPrompt('');
-      //clearInput();
     } catch (error) {
       console.error('Error sending prompt:', error);
     }
