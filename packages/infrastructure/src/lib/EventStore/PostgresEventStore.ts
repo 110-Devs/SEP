@@ -219,7 +219,7 @@ export class PostgresEventStore implements EventStore {
 
     const result = await this.db.query(query, bindings);
 
-    return result.rowCount;
+    return Number(result.rowCount);
   }
 
   public async republish(streamName: string, metadataMatcher?: MetadataMatcher, fromEventId?: string, limit?: number): Promise<void> {
