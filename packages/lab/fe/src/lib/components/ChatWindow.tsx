@@ -24,9 +24,13 @@ import {
 import { adjustTask } from '@ai/src/lib/evaluate/adjustTask';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
+import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
 
-//TODO: Konvertierung aus ChatInputField zu CHatWindow übertragen
-const ChatWindow = () => {
+interface ChatWindowProps {
+  handleClose: () => void; // Prop for handleClose function
+}
+
+const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const [messages, setMessages] = useState<
     { content: string; isUser: boolean }[]
   >([]);
@@ -40,11 +44,11 @@ const ChatWindow = () => {
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
 
   const promptExamples = [
-    'Change the Color of the Add Car to Fleet Button to red',
-    'Change the Font-styles to Helvetica for the entire page',
-    'Move the Add Car to Fleet Button to the right side of the page',
-    'Change the background color of the page to blue',
-    'Reorder the elements in the page to have the Add Car to Fleet Button at the bottom of the page',
+    "Change the Color of the Add Car to Fleet Button to red",
+    "Change the Font-styles to Helvetica for the entire page",
+    "Move the Add Car to Fleet Button to the right side of the page",
+    "Change the background color of the page to blue",
+    "Reorder the elements in the page to have the Add Car to Fleet Button at the bottom of the page"
   ];
 
   // Function to get a random example prompt
@@ -58,13 +62,13 @@ const ChatWindow = () => {
     if (!hasTypedInitialMessage.current) {
       // Check if the initial message has already been typed
       hasTypedInitialMessage.current = true; // Mark that we've typed the initial message
-      simulateTyping('Hello! How can I assist you today?');
+      simulateTyping("Hello! How can I assist you today?");
     }
   }, []); // Empty dependency array ensures this effect runs only once
 
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
@@ -79,21 +83,18 @@ const ChatWindow = () => {
 
     const typingInterval = setInterval(() => {
       if (index < message.length) {
-        setCurrentResponse((prev) => prev + message[index]);
+        setCurrentResponse(prev => prev + message[index]);
         index++;
         if (lastMessageRef.current) {
-          lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+          lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
       } else {
         clearInterval(typingInterval);
         setIsTyping(false);
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { content: message, isUser: false },
-        ]);
+        setMessages(prevMessages => [...prevMessages, { content: message, isUser: false }]);
         setCurrentResponse('');
         if (lastMessageRef.current) {
-          lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+          lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
       }
     }, 30);
@@ -150,26 +151,19 @@ const ChatWindow = () => {
 
   const handleSendMessage = async () => {
     if (inputValue.trim() !== '') {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { content: inputValue, isUser: true },
-      ]);
+      setMessages(prevMessages => [...prevMessages, { content: inputValue, isUser: true }]);
       const userPrompt = inputValue;
       setInputValue('');
 
       setTimeout(() => {
-        simulateTyping(
-          'Alright, give me a few seconds to process your given task'
-        );
+        simulateTyping("Alright, give me a few seconds to process your given task");
         setIsProcessing(true); // Show the typing indicator for processing
 
         setTimeout(async () => {
           await sendPrompt();
           setIsProcessing(false); // Hide the typing indicator after processing
 
-          simulateTyping(
-            'Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice'
-          );
+          simulateTyping("Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice");
         }, 4000);
       }, 1000);
 
@@ -185,13 +179,11 @@ const ChatWindow = () => {
           <ChatIcon />
         </HeaderIcon>
         <HeaderTitle>Goat AI</HeaderTitle>
+        <MyButtonComponent handleClose={handleClose} /> {/* Add exit button here */}
       </HeaderContainer>
       <MessageList>
         {messages.map((message, index) => (
-          <div
-            key={index}
-            ref={index === messages.length - 1 ? lastMessageRef : null}
-          >
+          <div key={index} ref={index === messages.length - 1 ? lastMessageRef : null}>
             {message.isUser ? (
               <UserMessage>{message.content}</UserMessage>
             ) : (
