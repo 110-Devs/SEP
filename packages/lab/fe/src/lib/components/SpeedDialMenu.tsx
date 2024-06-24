@@ -69,7 +69,7 @@ export default function PlaygroundSpeedDial() {
       {rangeSliderIsOpen && (
         <DragDropOptions onClose={toggleRangeSliderWindow} />
       )}
-      {chatInputBoxIsShown && <ChatWindow />}
+      {chatInputBoxIsShown && <ChatWindow handleClose={toggleChatInputBox}/>}
       {templatesIsOpen && <TemplatesOverlay onClose={toggleTemplatesOverlay} />}
     </React.Fragment>
   );

@@ -20,9 +20,13 @@ import { domJSON } from '../../../../ai/src/lib/truncate/domJSON';
 import { updateClassNames, ClassNameGenerator } from '../../../../ai/src/lib/truncate/stripJSON';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
+import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
 
-//TODO: Konvertierung aus ChatInputField zu CHatWindow übertragen 
-const ChatWindow = () => {
+interface ChatWindowProps {
+  handleClose: () => void; // Prop for handleClose function
+}
+
+const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
@@ -158,6 +162,7 @@ const ChatWindow = () => {
           <ChatIcon />
         </HeaderIcon>
         <HeaderTitle>Goat AI</HeaderTitle>
+        <MyButtonComponent handleClose={handleClose} /> {/* Add exit button here */}
       </HeaderContainer>
       <MessageList>
         {messages.map((message, index) => (

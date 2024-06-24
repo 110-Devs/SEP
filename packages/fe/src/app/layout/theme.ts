@@ -8,7 +8,7 @@ declare module '@mui/material/styles' {
       "styleOverrides": SxProps;
     }
   }
-  // allow configuration using `createTheme`
+  
   interface ThemeOptions {
     stateView?: {
       "styleOverrides": SxProps;

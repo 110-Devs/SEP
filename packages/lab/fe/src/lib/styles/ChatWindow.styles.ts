@@ -38,6 +38,7 @@ export const HeaderContainer = styled('div')({
     backgroundColor: '#E3F2FD',
     borderTopLeftRadius: CONTAINER_BORDER_RADIUS,
     borderTopRightRadius: CONTAINER_BORDER_RADIUS,
+    position: 'relative', // Add position relative to position the exit button absolutely
 });
 
 export const HeaderIcon = styled('div')({
