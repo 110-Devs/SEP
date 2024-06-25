@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ToggleButton from './ToggleButton';
 import Container from '@mui/material/Container';
 import { Box, Button, styled, Grow, Divider } from '@mui/material';
@@ -20,13 +20,34 @@ interface DragDropOptionsProps {
 
 const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
   //Event handler für Slider
-  const [value, setValue] = useState<number>(30);
-
-  const [open, setOpen] = useState(true);
+  const [value, setValue] = useState(() => {
+    const savedValue = localStorage.getItem('sliderValue');
+    return savedValue ? parseInt(savedValue, 10) : 30;
+  });
 
   const changeSize = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
+    localStorage.setItem('sliderValue', (newValue as number).toString());
+    window.dispatchEvent(new Event('storage')); // Trigger storage event to notify other components
   };
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedValue = localStorage.getItem('sliderValue');
+      setValue(savedValue ? parseInt(savedValue, 10) : 30);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const [open, setOpen] = useState(true);
+
+  // const changeSize = (event: Event, newValue: number | number[]) => {
+  //   setValue(newValue as number);
+  // };
 
   const handleClose = () => {
     setOpen(false);
@@ -69,7 +90,7 @@ const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
         value={value}
         onChange={changeSize}
         min={10}
-        max={20}
+        max={40}
       />
       <Div sx={{backgroundColor: '#cfe8fc'}}> Selected value: {value}</Div>
       <Button variant="contained" onClick={handleClose}>Confirm</Button>

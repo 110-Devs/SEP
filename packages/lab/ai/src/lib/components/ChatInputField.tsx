@@ -9,6 +9,7 @@ import { InputContainer, InputField } from '../styles/ChatInputField.styles';
 import { domJSON } from '../truncate/domJSON';
 import { updateClassNames, ClassNameGenerator } from '../truncate/stripJSON';
 import { adjustTask } from '../evaluate/adjustTask';
+import {usePageData} from "@frontend/hooks/use-page-data";
 
 /**
  * Represents a chat input field component.
@@ -69,6 +70,10 @@ const ChatInputField = () => {
       console.error('Error sending prompt:', error);
     }
   };
+  
+  const [pageData,] = usePageData();
+  console.log(`pd: ${Object.values(pageData)}`);
+  
 
   return (
     <InputContainer>

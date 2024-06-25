@@ -96,10 +96,27 @@ export const Sortable: React.FC<SortableProps> = ({ children, route }) => {
     console.log(childrens);
   }, [childrens]);
 
-  if (route === '/dashboard') {
+  const [isOn, setIsOn] = useState(() => {
+    const savedState = localStorage.getItem('toggleState');
+    return savedState === 'true';
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedState = localStorage.getItem('toggleState');
+      setIsOn(savedState === 'true');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  if (route === '/dashboard' || !isOn) {
     return <React.Fragment>{children}</React.Fragment>;
   }
-
+  console.log(route);
   return (
     <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
       <SortableContext items={childrens} strategy={verticalListSortingStrategy}>

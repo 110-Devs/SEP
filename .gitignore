@@ -46,3 +46,5 @@ data/*
 packages/shared/src/lib/*
 packages/fe/src/*
 packages/be/src/*
+
+.nx/

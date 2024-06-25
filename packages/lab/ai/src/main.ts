@@ -4,6 +4,7 @@ import environment from './lib/environments/environment';
 import { modelfile } from './lib/environments/modelConfig';
 import axios from 'axios';
 const { default: ollama } = require('ollama');
+import { PersistentManager } from '@cody-engine/lab/version-control';
 
 const app = express();
 const port = environment.PORT;
@@ -16,8 +17,8 @@ app.use(express.json());
  * Function to create the model.
  */
 (async function () {
-  console.log(environment);
-  console.log(modelfile);
+  // console.log(environment);
+  // console.log(modelfile);
   try {
     await ollama.create({
       name: model,
@@ -74,6 +75,27 @@ app.post('/api/send-prompt', async (req, res) => {
     res.status(500).send('Error processing the prompt.');
   }
 });
+
+app.post('/api/save', async (req, res) => {
+  try {
+    const modifications: object = req.body.modifications;
+    PersistentManager.addModification(req.body.route, modifications);
+
+    res.sendStatus(200);
+  } catch (error) {}
+});
+
+app.get('/api/get-modification', async (req, res) => {
+  try {
+    const collection: string = req.query.collection as string;
+    const route: string = req.query.route as string;
+    const modifications = await PersistentManager.getDragAndDropModification(collection, route);
+    res.send(modifications);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`);
