@@ -32,6 +32,7 @@ app.post('/api/send-prompt', async (req, res) => {
 
     const response = await axios.post(API_URL, data, header);
 
+
     //console.log(newTask);
 
     console.log("This is the response: " + response.data.response);

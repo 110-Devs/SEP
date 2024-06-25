@@ -123,7 +123,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     //Converting everything to String for the prompt
     const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    console.log(withoutSelectorJSON);
+    console.log(newJSON)
     console.log(newJSON.selectorMap);
 
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
