@@ -14,17 +14,26 @@ import {
   AIMessage,
   HeaderContainer,
   HeaderIcon,
-  HeaderTitle
+  HeaderTitle,
 } from '../styles/ChatWindow.styles'; // Import styled components
 import { domJSON } from '@ai/src/lib/truncate/domJSON';
-import { updateClassNames, ClassNameGenerator } from '@ai/src/lib/truncate/stripJSON';
+import {
+  updateClassNames,
+  ClassNameGenerator,
+} from '@ai/src/lib/truncate/stripJSON';
 import { adjustTask } from '@ai/src/lib/evaluate/adjustTask';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
+import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
 
-//TODO: Konvertierung aus ChatInputField zu CHatWindow übertragen 
-const ChatWindow = () => {
-  const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
+interface ChatWindowProps {
+  handleClose: () => void; // Prop for handleClose function
+}
+
+const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
+  const [messages, setMessages] = useState<
+    { content: string; isUser: boolean }[]
+  >([]);
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -94,10 +103,14 @@ const ChatWindow = () => {
   /**
    * Converting the current cody-DOM to JSON and sending the prompt with context via axios
    */
+
+  //#root > div.MuiBox-root.css-1fa9wkz > main
+  //.css-5u1jm3
   const sendPrompt = async (): Promise<void> => {
     //Converting Cody-DOM; toJSON(Node, FilterList)
-    const selectorJSON = domJSON.toJSON(document.body);
-    const codyJSON = domJSON.toJSON(document.body, {
+    const mainTag = document.querySelector('.css-5u1jm3');
+    const selectorJSON = domJSON.toJSON(mainTag);
+    const codyJSON = domJSON.toJSON(mainTag, {
       attributes: ['name', 'class'],
       domProperties: [],
     });
@@ -110,12 +123,13 @@ const ChatWindow = () => {
     //Converting everything to String for the prompt
     const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
+    console.log(newJSON)
     console.log(newJSON.selectorMap);
 
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
     console.log('Processing prompt:', inputValue);
     const req = modifiedRequest({ prompt: inputValue });
-    
+
     try {
       const response = await axios.post(API_URL, {
         prompt: `
@@ -128,10 +142,8 @@ const ChatWindow = () => {
       //Automatic execution of the method.
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
       console.log(newTask);
-      eval("(" + newTask + ")()");
+      eval('(' + newTask + ')()');
 
-      //setPrompt('');
-      //clearInput();
     } catch (error) {
       console.error('Error sending prompt:', error);
     }
@@ -167,6 +179,7 @@ const ChatWindow = () => {
           <ChatIcon />
         </HeaderIcon>
         <HeaderTitle>Goat AI</HeaderTitle>
+        <MyButtonComponent handleClose={handleClose} /> {/* Add exit button here */}
       </HeaderContainer>
       <MessageList>
         {messages.map((message, index) => (

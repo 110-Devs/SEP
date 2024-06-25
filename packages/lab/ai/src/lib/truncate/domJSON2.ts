@@ -1,12 +1,9 @@
-import { finder } from '@medv/finder';
-
 /* eslint-disable prefer-rest-params */
 /**
  * domJSON.js: A simple framework for converting DOM nodes to special JSON objects, and vice versa
- * Rewritten for TypeScript and removed module initialization. Import required to use the logic.
- * 
+ *
  * @fileOverview
- * @author  Alex Zaslavsky, Ruben the G.O.A.T
+ * @author  Alex Zaslavsky
  * @version 0.1.2
  * @license The MIT License: Copyright (c) 2013 Alex Zaslavsky
  */
@@ -26,17 +23,32 @@ export const domJSON: any = {};
  */
 
 /**
+ * Default metadata for a JSON object
+ * @private
+ * @ignore
+ */
+
+const metadata = {
+  href: win.location.href || null,
+  userAgent:
+    window.navigator && window.navigator.userAgent
+      ? window.navigator.userAgent
+      : null,
+  version: '0.1.2',
+};
+
+/**
  * Default options for creating the JSON object
  * @private
  * @ignore
  */
 const defaultsForToJSON = {
   absolutePaths: ['action', 'data', 'href', 'src'],
-  attributes: true,
+  attributes: { values: ['name', 'class', 'data-selector'] },
   computedStyle: false,
   cull: true,
   deep: true,
-  domProperties: true,
+  domProperties: { values: [] },
   filter: false,
   htmlOnly: false,
   metadata: true,
@@ -46,11 +58,21 @@ const defaultsForToJSON = {
 };
 
 /**
+ * Default options for creating a DOM node from a previously generated domJSON object
+ * @private
+ * @ignore
+ */
+const defaultsForToDOM = {
+  noMeta: false,
+  allowDangerousElements: false,
+};
+
+/**
  * A list of disallowed HTMLElement tags - there is no flexibility here, these cannot be processed by domJSON for security reasons!
  * @private
  * @ignore
  */
-const banned = ['link', 'script']; //Consider (maybe) adding the following tags: iframe, html, audio, video, object
+const banned = ['link', 'script', 'style']; //Consider (maybe) adding the following tags: iframe, html, audio, video, object
 
 /**
  * A list of node properties that must be copied if they exist; there is no user option that will remove these
@@ -303,12 +325,12 @@ const toAbsolute = function (value: any, origin: any) {
   let protocol, stack, parts;
   //Sometimes, we get lucky and the DOM Node we're working on already has the absolute URL as a DOM property, so we can just use that
   /*if (node[name]){
-              //We can just grab the compiled URL directly from the DOM element - easy peasy
-              var sub = node[name].indexOf(value);
-              if (sub !== -1) {
-                  return node[name];
-              }
-          }*/
+			//We can just grab the compiled URL directly from the DOM element - easy peasy
+			var sub = node[name].indexOf(value);
+			if (sub !== -1) {
+				return node[name];
+			}
+		}*/
 
   //Check to make sure we don't already have an absolute path, or even a dataURI
   // eslint-disable-next-line no-useless-escape
@@ -366,7 +388,7 @@ const copyJSON = function (node: any, opts: any) {
   for (const n in node) {
     //Make sure this property can be accessed
     try {
-      //accessing `selectionDirection6`, `selectionStart`, or `selectionEnd` throws in WebKit-based browsers
+      //accessing `selectionDirection`, `selectionStart`, or `selectionEnd` throws in WebKit-based browsers
       node[n];
     } catch (e) {
       continue;
@@ -411,11 +433,6 @@ const attrJSON = function (node: any, opts: any) {
   for (let i = 0; i < length; i++) {
     attributes[attr[i].name] = attr[i].value;
   }
-
-  //Author: Ruben a.k.a the GOAT
-  //Inserting custom attribute "data-selector" with the selector of the element as the value.
-  //attributes['data-selector'] = finder(node);
-
   attributes = opts.attributes ? boolFilter(attributes, opts.attributes) : null;
 
   //Add the attributes object, converting any specified absolute paths along the way
@@ -507,7 +524,7 @@ const toJSON = function (node: any, opts: any, depth: any) {
 domJSON.toJSON = function (node: any, opts: any) {
   let copy,
     options: any = {},
-    output = {};
+    output: any = {};
   const timer = new Date().getTime();
   const requiring = required.slice();
   let ignoring: any = ignored.slice();
@@ -523,7 +540,7 @@ domJSON.toJSON = function (node: any, opts: any) {
   options.serialProperties = toShorthand(options.serialProperties);
 
   //Make sure there is a base URL for absolute path conversions
-  //options.absoluteBase = win.location.origin + "/";
+  //options.absoluteBase = win.location.origin + '/';
 
   //Make lists of which DOM properties to skip and/or which are absolutely necessary
   if (options.serialProperties !== true) {
@@ -567,7 +584,173 @@ domJSON.toJSON = function (node: any, opts: any) {
   copy = toJSON(node, options, 0);
 
   //Wrap our copy object in a nice object of its own to save some metadata
-  output = copy;
+  if (options.metadata) {
+    output.meta = extend({}, metadata, {
+      clock: new Date().getTime() - timer,
+      date: new Date().toISOString(),
+      dimensions: {
+        inner: {
+          x: window.innerWidth,
+          y: window.innerHeight,
+        },
+        outer: {
+          x: window.outerWidth,
+          y: window.outerHeight,
+        },
+      },
+      options: options,
+    });
+    output.node = copy;
+  } else {
+    output = copy;
+  }
 
   return output;
+};
+
+/**
+ * Create a node based on a given nodeType
+ * @param {number} type The type of DOM Node (only the integers 1, 3, 7, 8, 9, 10, 11 are valid, see https://developer.mozilla.org/en-US/docs/Web/API/Node.nodeType); currently, only nodeTypes 1,3, and 11 have been tested and are officially supported
+ * @param {DocumentFragment} doc The document fragment to which this newly created DOM Node will be added
+ * @param {Object} data The saved DOM properties that are part of the JSON representation of this DOM Node
+ * @private
+ * @ignore
+ */
+const createNode = function (type: any, doc: any, data: any) {
+  if (doc instanceof DocumentFragment) {
+    doc = doc.ownerDocument;
+  }
+  switch (type) {
+    case 1: //HTMLElement
+      if (typeof data.tagName === 'string') {
+        return doc.createElement(data.tagName);
+      }
+      return false;
+
+    case 3: //Text Node
+      if (typeof data.nodeValue === 'string' && data.nodeValue.length) {
+        return doc.createTextNode(data.nodeValue);
+      }
+      return doc.createTextNode('');
+
+    case 7: //Processing Instruction
+      // eslint-disable-next-line no-prototype-builtins
+      if (data.hasOwnProperty('target') && data.hasOwnProperty('data')) {
+        return doc.createProcessingInstruction(data.target, data.data);
+      }
+      return false;
+
+    case 8: //Comment Node
+      if (typeof data.nodeValue === 'string') {
+        return doc.createComment(data.nodeValue);
+      }
+      return doc.createComment('');
+
+    case 9: //HTML Document
+      return doc.implementation.createHTMLDocument(data);
+
+    case 11: //Document Fragment
+      return doc;
+
+    default: //Failed
+      return false;
+  }
+};
+
+//Recursively convert a JSON object generated by domJSON to a DOM Node
+/**
+ * Do the work of converting a JSON object/string generated by domJSON to a DOM Node
+ * @param {Object} obj The JSON representation of the DOM Node we are about to create
+ * @param {HTMLElement} parent The HTML Element to which this DOM Node will be appended
+ * @param {DocumentFragment} doc The document fragment to which this newly created DOM Node will be added
+ * @param {Object} [opts] A list of all method options
+ * @private
+ * @ignore
+ */
+const toDOM = function (obj: any, parent: any, doc: any, opts: any) {
+  //Create the node, if possible
+  if (obj.nodeType) {
+    //Per default, some tags are not allowed
+    if (obj.nodeType === 1 && !opts.allowDangerousElements) {
+      for (const b in banned) {
+        if (obj.tagName.toLowerCase() === banned[b]) {
+          return false;
+        }
+      }
+    }
+    // eslint-disable-next-line no-var
+    var node = createNode(obj.nodeType, doc, obj);
+    parent.appendChild(node);
+  } else {
+    return false;
+  }
+
+  //Copy all available properties that are not arrays or objects
+  for (const x in obj) {
+    if (
+      typeof obj[x] !== 'object' &&
+      x !== 'isContentEditable' &&
+      x !== 'childNodes'
+    ) {
+      try {
+        node[x] = obj[x];
+      } catch (e) {
+        continue;
+      }
+    }
+  }
+
+  //If this is an HTMLElement, set the attributes
+  let src;
+  if (obj.nodeType === 1 && obj.tagName) {
+    if (obj.attributes) {
+      //Check for cross-origin
+      /*src = obj.attributes.src ? 'src' : (obj.attributes.href ? 'href' : null);
+				if (src) {
+					obj.attributes[src] += ( (obj.attributes[src].indexOf('?') === -1) ? '?' : '&'+Math.random().toString(36).slice(-2)+'=' ) + Math.random().toString(36).slice(-4);
+					obj.attributes.crossorigin = 'anonymous';
+					//node.setAttribute('crossorigin', 'anonymous');
+				}*/
+      for (const a in obj.attributes) {
+        node.setAttribute(a, obj.attributes[a]);
+      }
+    }
+  }
+
+  //Finally, if we have childNodes, recurse through them
+  if (obj.childNodes && obj.childNodes.length) {
+    for (const c in obj.childNodes) {
+      toDOM(obj.childNodes[c], node, doc, opts);
+    }
+  }
+};
+
+/**
+ * Take the JSON-friendly object created by the `.toJSON()` method and rebuild it back into a DOM Node
+ * @param {Object} obj A JSON friendly object, or even JSON string, of some DOM Node
+ * @param {Object} [opts] A list of all method options
+ * @param {boolean} [opts.allowDangerousElements=`false`] Use `true` to include the potentially dangerous elements `<link>` and `<script>`
+ * @param {boolean} [opts.noMeta=`false`] `true` means that this object is not wrapped in metadata, which it makes it somewhat more difficult to rebuild properly...
+ * @return {DocumentFragment} A `DocumentFragment` (nodeType 11) containing the result of unpacking the input `obj`
+ * @method
+ * @memberof domJSON
+ */
+domJSON.toDOM = function (obj: any, opts: any) {
+  // eslint-disable-next-line no-var
+  var options, node;
+  //Parse the JSON string if necessary
+  if (typeof obj === 'string') {
+    obj = JSON.parse(obj);
+  }
+  //Update the default options w/ the user's custom settings
+  options = extend({}, defaultsForToDOM, opts);
+
+  //Create a document fragment, and away we go!
+  node = document.createDocumentFragment();
+  if (options.noMeta) {
+    toDOM(obj, node, node, options);
+  } else {
+    toDOM(obj.node, node, node, options);
+  }
+  return node;
 };
