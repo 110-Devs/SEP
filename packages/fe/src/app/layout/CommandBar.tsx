@@ -104,13 +104,6 @@ const CommandBar = (props: CommandBarProps) => {
     {/* {props.children} */}
   </CardActions>;
 
-  console.log(Object.keys(pageData)[0]);
-  if (props.children !== null && props.children !== undefined) {
-    if (Array.isArray(props.children)) {
-      console.log(props.children[0]._owner.key);
-    }
-  }
-
   return <>
     <Card sx={fixed ? {
       position: 'fixed',

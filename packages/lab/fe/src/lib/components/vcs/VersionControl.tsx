@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -9,9 +9,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import HistoryIcon from '@mui/icons-material/History';
 import PreviewIcon from '@mui/icons-material/Preview';
 import ListItemText from '@mui/material/ListItemText';
-import { menuItems } from './save-files';
+import { initializeMenuItems, menuItems } from './save-files';
 import { Divider } from '@mui/material';
 import ExitButton from '../ExitButton';
+import { usePageData } from '@frontend/hooks/use-page-data';
+import { useCoordinateStore, useComponentOrder } from '@cody-engine/lab/dnd';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const listItemTextStyle = {
   fontWeight: 'bold', // Fett
@@ -25,7 +28,21 @@ const handleListItemClick = (text: string) => {
 
 export default function VersionControl() {
   const [open, setOpen] = React.useState(false);
+  const [pageData,] = usePageData();
+  const pageRoute = Object.keys(pageData)[0];
+  const addCoordinates = useCoordinateStore((state) => state.addCoordinates);
+  const setOrder = useComponentOrder((state) => state.setOrder);
+  const coordinates = useCoordinateStore((state) => state.coordinates);
+  const order = useComponentOrder((state) => state.order);
 
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      await initializeMenuItems(pageRoute, addCoordinates, setOrder);
+    };
+
+    fetchMenuItems();
+  }, [pageRoute, coordinates, order]);
+  
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -40,14 +57,14 @@ export default function VersionControl() {
       
       <ExitButton handleClose={toggleDrawer}/>
       <List sx={{mt: "35px"}}>
-        {menuItems.slice().reverse().map((MenuItems) => (
-          <ListItem key={MenuItems.text} disablePadding>
-            <ListItemButton onClick={() => handleListItemClick(MenuItems.text)}>
+        {menuItems.slice().reverse().map((MenuItems, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton onClick={() => MenuItems.function()}>
               <ListItemIcon>
-                <PreviewIcon sx={{ fontSize: 60 }} />
+                {MenuItems.icon}
               </ListItemIcon>
               <ListItemText primary={MenuItems.text} sx={listItemTextStyle} />
-              <ListItemText secondary={`Save Date: ${MenuItems.date.toLocaleString()}`} sx={listItemTextStyle}/>
+              <ListItemText secondary={`Modified: ${MenuItems.date.toLocaleString()}`} sx={listItemTextStyle}/>
             </ListItemButton>
           </ListItem>
         ))}

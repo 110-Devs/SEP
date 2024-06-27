@@ -1,20 +1,3 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { Grid } from '../Grid';
-import {
-  createSnapModifier,
-  restrictToHorizontalAxis,
-  restrictToParentElement,
-} from '@dnd-kit/modifiers';
-import { DraggableContext } from '../DraggableContext';
-import { Wrapper } from '../Wrapper';
-import { Draggable } from '../Draggable';
 import {
   DndContext,
   KeyboardSensor,
@@ -22,161 +5,157 @@ import {
   PointerActivationConstraint,
   TouchSensor,
   defaultCoordinates,
-  useDraggable,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import {
+  createSnapModifier,
+  restrictToHorizontalAxis,
+  restrictToParentElement,
+} from '@dnd-kit/modifiers';
 import type { Coordinates } from '@dnd-kit/utilities';
-import { Sortable } from '../Sortable';
-import { PersistentManager } from '../../../../../version-control/src/lib/PersistentManager';
+import { usePageData } from '@frontend/hooks/use-page-data';
 import axios from 'axios';
-import {usePageData} from "@frontend/hooks/use-page-data";
-import useComponentStore from '../../utils/useComponentStore';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useCoordinateStore } from '../../store';
+import { Draggable } from '../Draggable';
+import { Grid } from '../Grid';
+import { Wrapper } from '../Wrapper';
 
 type Props = {
   activationConstraint?: PointerActivationConstraint;
   children: React.ReactNode;
 };
 
-// export const SnapToGrid = ({ children, activationConstraint }: Props) => {
-//   const [{ x, y }, setCoordinates] = useState<Coordinates>(defaultCoordinates);
-//   const [gridSize, setGridSize] = React.useState(30);
-//   const [isDragging, setIsDragging] = useState(false);
-//   const [showGrid, setShowGrid] = useState(false);
-//   const [isAltPressed, setIsAltPressed] = useState(false);
-
-//   useEffect(() => {
-//     const handleKeyDown = (event: KeyboardEvent) => {
-//       if (event.key === 'Alt') {
-//         setIsAltPressed(true);
-//       }
-//     };
-
-//     const handleKeyUp = (event: KeyboardEvent) => {
-//       if (event.key === 'Alt') {
-//         setIsAltPressed(false);
-//       }
-//     };
-
-//     window.addEventListener('keydown', handleKeyDown);
-//     window.addEventListener('keyup', handleKeyUp);
-
-//     // Cleanup event listeners on component unmount
-//     return () => {
-//       window.removeEventListener('keydown', handleKeyDown);
-//       window.removeEventListener('keyup', handleKeyUp);
-//     };
-//   }, []);
-
-//   useEffect(() => {
-//     console.log(`coordinates: ${x}, ${y}`);
-//   } , [x, y]);
-
-//   const handleDragStart = () => {
-//     setIsDragging(true);
-//     setShowGrid(true);
-//   };
-
-//   const handleDragEnd = () => {
-//     setIsDragging(false);
-//   };
-
-//   const buttonStyle = {
-//     marginLeft: gridSize - 20 + 1,
-//     marginTop: gridSize - 20 + 1,
-//     width: gridSize * 8 - 1,
-//     height: gridSize * 2 - 1,
-//   };
-
-//   const snapToGrid = useMemo(() => createSnapModifier(gridSize), [gridSize]);
-
-//   const modifiers = [
-//     ...(!isAltPressed ? [snapToGrid] : []),
-//     restrictToHorizontalAxis,
-//     restrictToParentElement,
-//   ];
-
-//   useEffect(() => {
-//     if (!isDragging) {
-//       setShowGrid(false);
-//     }
-//   }, [isDragging]);
-
-//   const mouseSensor = useSensor(MouseSensor, {
-//     activationConstraint,
-//   });
-//   const touchSensor = useSensor(TouchSensor, {
-//     activationConstraint,
-//   });
-//   const keyboardSensor = useSensor(KeyboardSensor);
-//   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
-
-//   return (
-//     <DndContext
-//       sensors={sensors}
-//       onDragEnd={({ delta }) => {
-//         setCoordinates(({ x, y }) => {
-//           return {
-//             x: x + delta.x,
-//             y: y + delta.y,
-//           };
-//         });
-//       }}
-//       modifiers={modifiers}
-//     >
-//       <Wrapper>
-//         {showGrid && <Grid size={gridSize} onSizeChange={setGridSize} />}
-//         {React.Children.map(children, (child, index) => (
-//           <Draggable
-//             key={index}
-//             id={`draggable-${index}`}
-//             onDragStart={handleDragStart}
-//             onDragEnd={handleDragEnd}
-//             styles={{ alignItems: 'flex-start' }}
-//             top={y}
-//             left={x}
-//           >
-//             {child}
-//           </Draggable>
-//         ))}
-//       </Wrapper>
-//     </DndContext>
-//   );
-// };
-
-// Testing!
-
+/**
+ * Renders a component that allows dragging and dropping of child elements within a grid.
+ *
+ * @param {Props} props - The component props.
+ * @param {React.ReactNode} props.children - The child elements to be dragged and dropped.
+ * @param {PointerActivationConstraint} [props.activationConstraint] - The activation constraint for the drag and drop interaction.
+ * @return {React.ReactElement} The rendered component.
+ */
 export const SnapToGrid = ({ children, activationConstraint }: Props) => {
-  const [components, setComponents] = useState(
-    React.Children.map(children, () => defaultCoordinates)
-  );
-  // const [gridSize, setGridSize] = useState(40);
+  const coordinates = useCoordinateStore((state) => state.coordinates);
+  const addCoordinates = useCoordinateStore((state) => state.addCoordinates);
   const [isDragging, setIsDragging] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
   const [isAltPressed, setIsAltPressed] = useState(false);
-  const [pageData,] = usePageData();
+  const [isOn, setIsOn] = useState(() => {
+    const savedState = localStorage.getItem('toggleState');
+    return savedState === 'true';
+  });
+
+  const [pageData] = usePageData();
   const pageRoute = Object.keys(pageData)[0];
 
+  useEffect(() => {
+    /**
+     * Handles the storage change event by updating the state based on the retrieved toggle state.
+     *
+     * @return {void}
+     */
+    const handleStorageChange = () => {
+      const savedState = localStorage.getItem('toggleState');
+      setIsOn(savedState === 'true');
+    };
+
+    /**
+     * Adds an event listener for the 'storage' event and removes it when the component unmounts.
+     *
+     * @return {void}
+     */
+    window.addEventListener('storage', handleStorageChange);
+
+    /**
+     * Cleans up the event listener when the component unmounts.
+     *
+     * @return {void}
+     */
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  if (!isOn) {
+    return <>{children}</>;
+  }
+
+  /**
+   * Extracts the ID of a React element from its children.
+   *
+   * @param {React.ReactNode} child - The child element to extract the ID from.
+   * @return {string|null} The ID of the element, or null if it cannot be found.
+   */
   const extractElementId = (child: React.ReactNode) => {
     if (React.isValidElement(child)) {
       if (child.props && child.props.title) {
         return child.props.title;
       }
+
       if (child.key) {
         return child.key;
       }
     }
+
     return null;
   };
 
-  // Initialisieren des State mit den extrahierten Werten aus den Kindern
-  const [elementIds, setElementIds] = useState(() => {
-    return React.Children.map(children, extractElementId);
-  });
-
   useEffect(() => {
-    setElementIds(React.Children.map(children, extractElementId));
-  }, [children]);
+    /**
+     * Fetches drag-and-drop modifications from the server and updates the coordinates of each child element.
+     *
+     * @return {Promise<void>} A promise that resolves when the modifications have been fetched and updated.
+     */
+    const fetchModifications = async () => {
+      let response;
+      const collection = '__drag-and-drop';
+      const route = pageRoute;
+
+      try {
+        response = await axios.get(
+          `http://localhost:3000/api/get-dnd-modifications?collection=${collection}&route=${route}`
+        );
+      } catch (error) {
+        console.error(error);
+      }
+
+      const modifications = response?.data;
+
+      React.Children.forEach(children, (child, index) => {
+        const elementId = extractElementId(child);
+        let coordinates: Coordinates;
+
+        if (modifications !== undefined && modifications[elementId]) {
+          const { x, y } = modifications[elementId].data;
+          coordinates = { x, y };
+        } else {
+          coordinates = defaultCoordinates;
+        }
+
+        addCoordinates(elementId, coordinates);
+      });
+    };
+
+    fetchModifications();
+  }, [pageRoute, children]);
+
+  const handleDragEnd = (id: string, delta: Coordinates) => {
+    addCoordinates(id, {
+      x: coordinates[id]?.x + delta.x,
+      y: coordinates[id]?.y + delta.y,
+    });
+
+    axios.post('http://localhost:3000/api/save', {
+      collection: '__drag-and-drop',
+      route: pageRoute,
+      modifications: {
+        elementId: id,
+        x: coordinates[id].x + delta.x,
+        y: coordinates[id].y + delta.y,
+      },
+    });
+  };
 
   const [gridSize, setGridSize] = useState(() => {
     const sliderValue = localStorage.getItem('sliderValue');
@@ -232,25 +211,6 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     }
   }, [isDragging]);
 
-  const handleDragEnd = (index: number, delta: Coordinates) => {
-    setComponents((components) =>
-      components?.map((component, i) =>
-        i === index
-          ? { x: component.x + delta.x, y: component.y + delta.y }
-          : component
-      )
-    );
-
-    axios.post('http://localhost:3000/api/save', {
-      route: pageRoute,
-      modifications: {
-        elementId: elementIds?.[index],
-        x: (components?.[index]?.x ?? 0) + delta.x,
-        y: (components?.[index]?.y ?? 0) + delta.y,
-      }
-    })
-  };
-
   const handleDS = () => {
     setIsDragging(true);
     setShowGrid(true);
@@ -260,187 +220,43 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     setIsDragging(false);
   };
 
-  const buttonStyle = {
-    marginLeft: gridSize - 20 + 1,
-    marginTop: gridSize - 20 + 1,
-    width: gridSize * 8 - 1,
-    height: gridSize * 2 - 1,
-  };
-
-  useEffect(() => {
-    if (elementIds?.length === 0) return;
-
-    const fetchModifications = async () => {
-      let response;
-      const collection = "__drag-and-drop";
-      const route = pageRoute;
-
-      try {
-        response = await axios.get(`http://localhost:3000/api/get-modification?collection=${collection}&route=${route}`);
-        console.log(`response: ${response.data}`);
-      } catch (error) {
-        console.error(error);
-      }
-
-      const modifications = response?.data;
-      setComponents((prevComponents) =>
-        prevComponents?.map((component, index) => {
-          const elementId = elementIds?.[index];
-          if (modifications[elementId]) {
-            const { x, y } = modifications[elementId].data;
-            return { ...component, x, y };
-          }
-          return component;
-        })
-      );
-    };
-  
-    fetchModifications();
-  }, [elementIds, pageRoute]);
-
-  const [isOn, setIsOn] = useState(() => {
-    const savedState = localStorage.getItem('toggleState');
-    return savedState === 'true';
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint,
   });
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedState = localStorage.getItem('toggleState');
-      setIsOn(savedState === 'true');
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  if (!isOn) {
-    return <>{children}</>;
-  }
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint,
+  });
+  const keyboardSensor = useSensor(KeyboardSensor);
+  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
   return (
     <DndContext
       onDragEnd={({ delta, active }) => {
-        const index = parseInt(String(active.id).split('-')[1], 10);
-        handleDragEnd(index, delta);
+        handleDragEnd(String(active.id), delta);
       }}
+      sensors={sensors}
       modifiers={modifiers}
     >
       <Wrapper>
         {showGrid && <Grid size={gridSize} onSizeChange={setGridSize} />}
-        {React.Children.map(children, (child, index) => (
-          <Draggable
-            key={index}
-            id={`draggable-${index}`}
-            onDragStart={handleDS}
-            onDragEnd={handleDE}
-            styles={{ alignItems: 'flex-start' }}
-            top={components ? components[index].y : 0}
-            left={components ? components[index].x : 0}
-            buttonStyle={buttonStyle}
-            gridSize={gridSize}
-          >
-            {child}
-          </Draggable>
-        ))}
+        {React.Children.map(children, (child, index) => {
+          const elementId = extractElementId(child);
+          const coordinate = coordinates[elementId] || { x: 0, y: 0 };
+          return (
+            <Draggable
+              key={index}
+              id={elementId}
+              onDragStart={handleDS}
+              onDragEnd={handleDE}
+              styles={{ alignItems: 'flex-start' }}
+              top={coordinate.y}
+              left={coordinate.x}
+            >
+              {child}
+            </Draggable>
+          );
+        })}
       </Wrapper>
     </DndContext>
   );
 };
-
-// export const SnapToGrid = ({ children, activationConstraint }: Props) => {
-//   const positions = PositionSubscriber.useState(); // Verwende den Zustand aus dem Subscriber
-//   const [gridSize, setGridSize] = useState(40);
-//   const [isDragging, setIsDragging] = useState(false);
-//   const [showGrid, setShowGrid] = useState(false);
-//   const [elementIds] = useState(() =>
-//     React.Children.map(children, (_, index) => `element-${index}`)
-//   );
-//   const snapToGrid = useMemo(() => createSnapModifier(gridSize), [gridSize]);
-
-//   const modifiers = [
-//     snapToGrid,
-//     restrictToHorizontalAxis,
-//     restrictToParentElement,
-//   ];
-
-//   useEffect(() => {
-//     if (!isDragging) {
-//       setShowGrid(false);
-//     }
-//   }, [isDragging]);
-
-//   const handleDragEnd = async (index: number, delta: Coordinates) => {
-//     const elementId = elementIds?.[index] ?? '';
-//     const currentPos = positions[elementId] || defaultCoordinates;
-//     const updatedPosition = {
-//       x: currentPos.x + delta.x,
-//       y: currentPos.y + delta.y,
-//     };
-    
-//     PositionSubscriber.mutate({
-//       [elementId]: updatedPosition,
-//     });
-
-//     // await PersistentManager.addModification('/path2', {
-//     //   "elementId": "elementIasdd",
-//     //   "x": 14,
-//     //   "y": 0
-//     // });
-
-//     // PersistentManager.addModification('/path2', {
-//     //   elementId: elementId,
-//     //   x: updatedPosition.x,
-//     //   y: updatedPosition.y
-//     // });
-//   };
-
-//   const handleDS = () => {
-//     setIsDragging(true);
-//     setShowGrid(true);
-//   };
-
-//   const handleDE = () => {
-//     setIsDragging(false);
-//   };
-
-//   const buttonStyle = {
-//     marginLeft: gridSize - 20 + 1,
-//     marginTop: gridSize - 20 + 1,
-//     width: gridSize * 8 - 1,
-//     height: gridSize * 2 - 1,
-//   };
-
-//   return (
-//     <DndContext
-//       onDragEnd={({ delta, active }) => {
-//         const index = parseInt(String(active.id).split('-')[1], 10);
-//         handleDragEnd(index, delta);
-//       }}
-//       modifiers={modifiers}
-//     >
-//       <Wrapper>
-//         {showGrid && <Grid size={gridSize} onSizeChange={setGridSize} />}
-//         {React.Children.map(children, (child, index) => {
-//           const position = positions[`element-${index}`] || defaultCoordinates;
-//           return (
-//             <Draggable
-//               key={index}
-//               id={`draggable-${index}`}
-//               onDragStart={handleDS}
-//               onDragEnd={handleDE}
-//               styles={{ alignItems: 'flex-start' }}
-//               top={position.y}
-//               left={position.x}
-//               buttonStyle={buttonStyle}
-//               gridSize={gridSize}
-//             >
-//               {child}
-//             </Draggable>
-//           );
-//         })}
-//       </Wrapper>
-//     </DndContext>
-//   );
-// };

@@ -1,9 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { DocumentStore } from '@event-engine/infrastructure/DocumentStore';
 import { InMemoryDocumentStore } from '@event-engine/infrastructure/DocumentStore/InMemoryDocumentStore';
-
-// TO-DO: Implement try catch block for the throw error in getPersistentCollectionsPath()
+import * as fs from 'fs';
+import * as path from 'path';
 
 type Modification<T> = {
   data: T;
@@ -22,8 +20,8 @@ type DragAndDropData = {
 
 type SortingData = {
   elements: {
-    'commandbar': number,
-    'components': number,
+    commandbar: number;
+    components: number;
   };
 };
 
@@ -36,9 +34,9 @@ interface ModificationTypeMap {
 }
 
 const COLLECTION_MAP: Record<keyof ModificationTypeMap, string> = {
-  DragAndDropData: "__drag-and-drop",
-  SortingData: "__sorting",
-  JsFunctionData: "__js-function",
+  DragAndDropData: '__drag-and-drop',
+  SortingData: '__sorting',
+  JsFunctionData: '__js-function',
 };
 
 export class PersistentManager {
@@ -67,99 +65,97 @@ export class PersistentManager {
    */
   static readonly JS_FUNCTION_COLLECTION = '__js-function';
 
-  private static currentDragAndDroState: object;
-
-  private static currentSortingModState: object;
-
-  private static currentJsFunctionState: object;
-
   static {
-    PersistentManager.storageFile = PersistentManager.getPersistentCollectionsPath();
-    PersistentManager.ds = new InMemoryDocumentStore(PersistentManager.storageFile);
+    PersistentManager.storageFile =
+      PersistentManager.getPersistentCollectionsPath();
+    PersistentManager.ds = new InMemoryDocumentStore(
+      PersistentManager.storageFile
+    );
     PersistentManager.initializePersistentCollections();
   }
-  
-  public static async getModifications(collection: string, pageRoute: string): Promise<Documents<DragAndDropData> | Documents<SortingData> | Documents<JsFunctionData> | undefined> {
-    const dnd = await PersistentManager.getDragAndDropModification(collection, pageRoute);
 
-    return undefined;
+  public static async getSortingModification(
+    collection: string = PersistentManager.SORTING_COLLECTION,
+    pageRoute: string
+  ): Promise<Modification<SortingData> | undefined> {
+    const modifications: Documents<SortingData> | null =
+      await PersistentManager.ds.getDoc(collection, pageRoute);
+
+    if (modifications && modifications.modifications.length > 0) {
+      modifications.modifications.sort((a, b) => b.timestamp - a.timestamp);
+      const latestModification = modifications.modifications[0];
+      return latestModification;
+    }
   }
 
-  public static async getDragAndDropModification(collection: string = PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute: string): Promise<object | undefined> {
-      const modifications: Documents<DragAndDropData> | null = await PersistentManager.ds.getDoc(collection, pageRoute);
-      const currentModifications = modifications?.modifications.reduce((acc, curr) => {
+  public static async getDragAndDropModification(
+    collection: string = PersistentManager.DRAG_AND_DROP_COLLECTION,
+    pageRoute: string
+  ): Promise<object | undefined> {
+    const modifications: Documents<DragAndDropData> | null =
+      await PersistentManager.ds.getDoc(collection, pageRoute);
+    const currentModifications = modifications?.modifications.reduce(
+      (acc, curr) => {
         const elementId = curr.data.elementId;
         if (!acc[elementId] || acc[elementId].timestamp < curr.timestamp) {
           acc[elementId] = curr;
         }
         return acc;
-      }, {} as { [key: string]: Modification<DragAndDropData> });
+      },
+      {} as { [key: string]: Modification<DragAndDropData> }
+    );
 
     return currentModifications;
   }
 
-  public static async addModification<T extends object>(pageRoute: string, data: T): Promise<void> {
-  //   public static async addModification<K extends keyof ModificationTypeMap>(
-  //     pageRoute: string,
-  //     data: ModificationTypeMap[K]
-  //   ): Promise<void> {
-    // if (await PersistentManager.ds.getDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute) === null) {
-    //   await PersistentManager.ds.addDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute, {
-    //     "modifications": []
-    //   });
-    // }
+  public static async getAllModifications(
+    pageRoute: string
+  ): Promise<Object | undefined> {
+    const dnd = await PersistentManager.ds.getDoc('__drag-and-drop', pageRoute);
+    const order = await PersistentManager.ds.getDoc('__sorting', pageRoute);
 
-    // const modifications = await PersistentManager.ds.getDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute);
-    // (modifications as documents).modifications.push({
-    //   data: data,
-    //   timestamp: Date.now()
-    // })
-
-    // PersistentManager.ds.replaceDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute, modifications);
-
-    // console.log(modifications);
-    let modifications = await PersistentManager.ds.getDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute);
-
-    if (modifications === null) {
-        modifications = { modifications: [] };
-        await PersistentManager.ds.addDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute, modifications);
-    }
-
-    // Now modifications is guaranteed to be an object
-    (modifications as { modifications: any[] }).modifications.push({
-        data: data,
-        timestamp: Date.now()
-    });
-
-    await PersistentManager.ds.replaceDoc(PersistentManager.DRAG_AND_DROP_COLLECTION, pageRoute, modifications);
-    // const collection = COLLECTION_MAP[K];
-  
-    //   let modifications = await PersistentManager.ds.getDoc(collection, pageRoute);
-  
-    //   if (modifications === null) {
-    //     modifications = { modifications: [] };
-    //     await PersistentManager.ds.addDoc(collection, pageRoute, modifications);
-    //   }
-  
-    //   (modifications as { modifications: any[] }).modifications.push({
-    //     data: data,
-    //     timestamp: Date.now(),
-    //   });
-  
-    //   await PersistentManager.ds.replaceDoc(collection, pageRoute, modifications);
-  
-    //   console.log(modifications);
+    return {
+      dnd,
+      order,
+    };
   }
 
-  // public static async getModification
+  public static async addModification<T extends object>(
+    collection: string,
+    pageRoute: string,
+    data: T
+  ): Promise<void> {
+    let modifications = await PersistentManager.ds.getDoc(
+      collection,
+      pageRoute
+    );
+
+    if (modifications === null) {
+      modifications = { modifications: [] };
+      await PersistentManager.ds.addDoc(collection, pageRoute, modifications);
+    }
+
+    (modifications as { modifications: any[] }).modifications.push({
+      data: data,
+      timestamp: Date.now(),
+    });
+
+    await PersistentManager.ds.replaceDoc(collection, pageRoute, modifications);
+  }
 
   /**
    * Initializes the persistent collections.
    */
   private static async initializePersistentCollections(): Promise<void> {
-    await PersistentManager.ds.addCollection(PersistentManager.DRAG_AND_DROP_COLLECTION);
-    await PersistentManager.ds.addCollection(PersistentManager.SORTING_COLLECTION);
-    await PersistentManager.ds.addCollection(PersistentManager.JS_FUNCTION_COLLECTION);
+    await PersistentManager.ds.addCollection(
+      PersistentManager.DRAG_AND_DROP_COLLECTION
+    );
+    await PersistentManager.ds.addCollection(
+      PersistentManager.SORTING_COLLECTION
+    );
+    await PersistentManager.ds.addCollection(
+      PersistentManager.JS_FUNCTION_COLLECTION
+    );
   }
 
   /**
@@ -211,10 +207,4 @@ export class PersistentManager {
     );
     return path.join(projectRoot, 'data', 'persistent-collections.json');
   }
-
-  public static printPersistentCollectionsPath() {
-    console.log(`>> ${PersistentManager.storageFile}`);
-  }
 }
-
-PersistentManager.printPersistentCollectionsPath();
