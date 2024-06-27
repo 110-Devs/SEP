@@ -8,34 +8,40 @@ import { ColorModeContext, FontType } from '@frontend/app/providers/ToggleColorM
 
 
 interface TemplateProps {
-  onClose: () => void;
+  onClose: () => void; // Function to close the modal
 }
 
 const Templates: React.FC<TemplateProps> = ({ onClose }) => {
-  const [open, setOpen] = useState(true);
-  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext);
+  const [open, setOpen] = useState(true); // State to manage the visibility of the modal
+  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext); // Accessing theme and font settings from context
 
+  // Close the modal and trigger onClose callback after animation
   const handleClose = () => {
     setOpen(false);
     setTimeout(onClose, 500); // Wait for the animation to complete
   };
 
+  // Apply selected theme
   const handleApplyTheme = (theme: 'light' | 'dark' | 'pink' | 'green' | 'purple' | 'black' | 'white') => {
-    setTheme(theme); // Change the theme
+    setTheme(theme);
   };
 
+  // Handle font change
   const handleFontChange = (event: SelectChangeEvent<FontType>) => {
     setFont(event.target.value as FontType);
     console.log(`Font changed to: ${event.target.value}`);
   };
 
+  // Reset theme to default
   const handleResetTheme = () => {
-    resetTheme(); // Reset to light theme
+    resetTheme();
   };
 
+  // Reset font to default
   const handleResetFont = () => {
-    setFont('Roboto'); // Reset font to Roboto
+    setFont('Roboto'); // Assuming 'Roboto' is the default font
   };
+
 
   return (
     <React.Fragment>
@@ -50,7 +56,7 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
             boxShadow: 5,
             width: '70vw',
             height: '85vh',
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#cfe8fc',
+            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5',
             padding: '50px',
             pl: '100px',
             pr: '100px',
