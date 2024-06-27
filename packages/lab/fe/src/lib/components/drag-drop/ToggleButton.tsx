@@ -6,13 +6,21 @@ import '../../styles/ToggleButton.css';
  * @returns {JSX.Element} Toggle switch UI component.
  */
 const ToggleButton = () => {
-  const [isOn, setIsOn] = useState(false);
+  const [isOn, setIsOn] = useState(() => {
+    const savedState = localStorage.getItem('toggleState');
+    return savedState === 'true';
+  });
 
   /**
    * Toggles the state of the switch between on and off.
    */
   const toggle = () => {
-    setIsOn(!isOn);
+    setIsOn(prevState => {
+      const newState = !prevState;
+      localStorage.setItem('toggleState', newState.toString());
+      window.dispatchEvent(new Event('storage')); // Trigger storage event to notify other components
+      return newState;
+    });
   };
 
   return (

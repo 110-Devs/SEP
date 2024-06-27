@@ -17,6 +17,9 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/system';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import styles from './SortableItem.module.css';
+import axios from 'axios';
+import { usePageData } from '@frontend/hooks/use-page-data';
+import { useComponentOrder } from '../../store';
 
 const DraggableButton = styled(IconButton)({
   padding: 0,
@@ -67,39 +70,84 @@ type SortableProps = {
   route: string;
 };
 
+type Child = {
+  id: string;
+  content: React.ReactNode;
+};
+
 export const Sortable: React.FC<SortableProps> = ({ children, route }) => {
+  const order = useComponentOrder((state) => state.order);
+  const setOrder = useComponentOrder((state) => state.setOrder);
+  const [childrens, setChildrens] = useState<Child[]>([]);
+  const [pageData,] = usePageData();
+  const pageRoute = Object.keys(pageData)[0];
 
-  const [childrens, setChildrens] = useState(
-    children.map((child) => ({
-      id: uuidv4(),
-      content: child,
-    }))
-  );
+  useEffect(() => {
+    const fetchModifications = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/get-sorting-modifications?collection=__sorting&route=${pageRoute}`);
+        const modifications = response?.data;
 
-  const getChildPos = (id: UniqueIdentifier) =>
-    childrens.findIndex((child) => child.id === id);
+        if (modifications && modifications.data && modifications.data.components) {
+          setOrder(modifications.data.components);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchModifications();
+  }, [pageRoute]);
+
+  useEffect(() => {
+    setChildrens(
+      order.map((order) => ({
+        id: uuidv4(),
+        content: children[order],
+      }))
+    );
+  }, [order]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
+  
     if (!over || active.id === over.id) return;
+  
+    const originalPos = childrens.findIndex(child => child.id === active.id);
+    const newPos = childrens.findIndex(child => child.id === over.id);
+    const newOrder = arrayMove(order, originalPos, newPos);
+    setOrder(newOrder as [number, number]);
 
-    setChildrens((prevChildrens) => {
-      const originalPos = getChildPos(active.id);
-      const newPos = getChildPos(over.id);
-
-      return arrayMove(prevChildrens, originalPos, newPos);
+    axios.post('http://localhost:3000/api/save', {
+      collection: '__sorting',
+      route: pageRoute,
+      modifications: {
+        components: newOrder,
+      }
     });
   };
 
-  useEffect(() => {
-    console.log(childrens);
-  }, [childrens]);
+  const [isOn, setIsOn] = useState(() => {
+    const savedState = localStorage.getItem('toggleState');
+    return savedState === 'true';
+  });
 
-  if (route === '/dashboard') {
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedState = localStorage.getItem('toggleState');
+      setIsOn(savedState === 'true');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  if (route === '/dashboard' || !isOn) {
     return <React.Fragment>{children}</React.Fragment>;
   }
-
+  
   return (
     <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCorners}>
       <SortableContext items={childrens} strategy={verticalListSortingStrategy}>

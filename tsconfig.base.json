@@ -24,6 +24,9 @@
       "@cody-engine/contribution/*": ["packages/contribution/src/*"],
       "@cody-engine/lab/ai/*": ["packages/lab/ai/src/*"],
       "@cody-engine/lab/dnd": ["packages/lab/dnd/src/index.ts"],
+      "@cody-engine/lab/version-control": [
+        "packages/lab/version-control/src/index.ts"
+      ],
       "@cody-engine/lab/fe": ["packages/lab/fe/src/index.ts"],
       "@cody-play/*": ["packages/play/src/*"],
       "@event-engine/descriptions/*": ["packages/descriptions/src/lib/*"],

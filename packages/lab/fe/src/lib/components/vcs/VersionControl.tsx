@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -9,8 +9,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import HistoryIcon from '@mui/icons-material/History';
 import PreviewIcon from '@mui/icons-material/Preview';
 import ListItemText from '@mui/material/ListItemText';
-import { menuItems } from './save-files'; // Assuming menuItems is an array of saved files data
+import { initializeMenuItems, menuItems } from './save-files';
+import { Divider } from '@mui/material';
 import ExitButton from '../ExitButton';
+import { usePageData } from '@frontend/hooks/use-page-data';
+import { useCoordinateStore, useComponentOrder } from '@cody-engine/lab/dnd';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { ColorModeContext } from '@frontend/app/providers/ToggleColorMode';
 import { Div } from '../drag-drop/DragDropOptions';
 
@@ -27,8 +31,23 @@ const handleListItemClick = (text: string) => {
 };
 
 export default function VersionControl() {
+  const [open, setOpen] = React.useState(false);
+  const [pageData,] = usePageData();
+  const pageRoute = Object.keys(pageData)[0];
+  const addCoordinates = useCoordinateStore((state) => state.addCoordinates);
+  const setOrder = useComponentOrder((state) => state.setOrder);
+  const coordinates = useCoordinateStore((state) => state.coordinates);
+  const order = useComponentOrder((state) => state.order);
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      await initializeMenuItems(pageRoute, addCoordinates, setOrder);
+    };
+
+    fetchMenuItems();
+  }, [pageRoute, coordinates, order]);
+  
   const { mode } = useContext(ColorModeContext); // Accessing color mode from context
-  const [open, setOpen] = React.useState(false); // State to manage drawer open/close
 
   // Toggle drawer state
   const toggleDrawer = () => {
@@ -43,16 +62,16 @@ export default function VersionControl() {
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}
     >
-      <ExitButton handleClose={toggleDrawer} /> {/* Exit button to close the drawer */}
-      <List sx={{ mt: "35px" }}>
-        {menuItems.slice().reverse().map((menuItem) => ( // Reversing the order of items
-          <ListItem key={menuItem.text} disablePadding>
-            <ListItemButton onClick={() => handleListItemClick(menuItem.text)}>
+      <ExitButton handleClose={toggleDrawer}/>
+      <List sx={{mt: "35px"}}>
+        {menuItems.slice().reverse().map((MenuItems, index) => (
+          <ListItem key={index} disablePadding>
+            <ListItemButton onClick={() => MenuItems.function()}>
               <ListItemIcon>
-                <PreviewIcon sx={{ fontSize: 60, color: '#000000' }} /> {/* Icon for preview */}
+                {MenuItems.icon}
               </ListItemIcon>
-              <Div><ListItemText primary={menuItem.text} sx={listItemTextStyle} /></Div> {/* Primary text */}
-              <Div><ListItemText secondary={`Save Date: ${menuItem.date.toLocaleString()}`} /></Div> {/* Secondary text */}
+              <ListItemText primary={MenuItems.text} sx={listItemTextStyle} />
+              <ListItemText secondary={`Modified: ${MenuItems.date.toLocaleString()}`} sx={listItemTextStyle}/>
             </ListItemButton>
           </ListItem>
         ))}

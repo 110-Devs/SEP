@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import styless from './Draggable.module.css';
-import IconButton from '@mui/material/IconButton';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/system';
+import React, { useEffect, useRef } from 'react';
+import styless from './Draggable.module.css';
 
 const DraggableButton = styled(IconButton)({
   padding: 0,
   margin: 0,
-  // Override the default minWidth with higher specificity
   minWidth: 'auto !important',
   width: 'auto',
   height: 'auto',
@@ -16,26 +15,35 @@ const DraggableButton = styled(IconButton)({
 
 type Props = {
   children: React.ReactNode;
-  buttonStyle?: React.CSSProperties;
   onDragStart: () => void;
   onDragEnd: () => void;
   styles: React.CSSProperties;
   id: string;
   left: number;
   top: number;
-  gridSize: number;
 };
 
+/**
+ * Component that allows its children to be dragged and dropped using D&D Kit.
+ *
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The children to be wrapped.
+ * @param {Function} props.onDragStart - The function to be called when drag starts.
+ * @param {Function} props.onDragEnd - The function to be called when drag ends.
+ * @param {React.CSSProperties} props.styles - The styles to be applied to the component.
+ * @param {string} props.id - The id of the draggable component.
+ * @param {number} props.left - The left position of the component.
+ * @param {number} props.top - The top position of the component.
+ * @return {JSX.Element} The Draggable component.
+ */
 export function Draggable({
   children,
-  buttonStyle,
   onDragStart,
   onDragEnd,
   styles,
   id,
   left,
   top,
-  gridSize,
 }: Props) {
   const {
     attributes,
@@ -59,24 +67,22 @@ export function Draggable({
   const draggableButtonRef = useRef<HTMLDivElement>(null);
   const childrenWrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (childrenWrapperRef.current) {
-      const rect = childrenWrapperRef.current.getBoundingClientRect();
-      const width = rect.width;
-      console.log('Draggable button width:', width);
-      console.log(`${width / gridSize}px`);
-    }
-  }, [childrenWrapperRef.current?.offsetWidth]);
-
+  /**
+   * Get the width of the draggable button.
+   *
+   * @return {number} The width of the draggable button, or 0 if not available.
+   */
   const getDraggableButtonWidth = () => {
     if (draggableButtonRef.current) {
       return draggableButtonRef.current.offsetWidth;
     }
+
     return 0;
   };
 
   const style = {
     display: 'flex',
+    // If the left position is less than the draggable button width, set the flex direction to row-reverse.
     flexDirection: left < getDraggableButtonWidth() ? 'row-reverse' : 'row',
   } as React.CSSProperties;
 
@@ -112,9 +118,7 @@ export function Draggable({
             <DragIndicatorIcon />
           </DraggableButton>
         </div>
-        <div ref={childrenWrapperRef}>
-          {children}
-        </div>
+        <div ref={childrenWrapperRef}>{children}</div>
       </div>
     </div>
   );

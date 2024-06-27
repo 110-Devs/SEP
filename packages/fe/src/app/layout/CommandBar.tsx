@@ -91,6 +91,8 @@ const CommandBar = (props: CommandBarProps) => {
     }
   });
 
+  const snapToGridRef = React.createRef<null>();
+
   const cardActions = <CardActions sx={{
     overflow: "auto",
     whiteSpace: "nowrap",

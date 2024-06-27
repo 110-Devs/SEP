@@ -1,4 +1,4 @@
-import {QueryClientProvider} from "@tanstack/react-query";
+pimport {QueryClientProvider} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {PlayStandardPage} from "@cody-play/app/pages/play-standard-page";
 import {

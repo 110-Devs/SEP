@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import ToggleButton from './ToggleButton';
 import Container from '@mui/material/Container';
 import { Button, styled, Grow, Divider, Grid } from '@mui/material';
@@ -27,8 +27,6 @@ const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
   const [value, setValue] = useState<number>(30);
   // Accessing theme mode from context
   const { mode } = useContext(ColorModeContext);
-  // State for modal open/close
-  const [open, setOpen] = useState(true);
 
   /**
    * Event handler for slider value change.
@@ -37,11 +35,27 @@ const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
    */
   const changeSize = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
+    localStorage.setItem('sliderValue', (newValue as number).toString());
+    window.dispatchEvent(new Event('storage')); // Trigger storage event to notify other components
   };
 
-  /**
-   * Closes the modal after a delay for animation completion.
-   */
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedValue = localStorage.getItem('sliderValue');
+      setValue(savedValue ? parseInt(savedValue, 10) : 30);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  const [open, setOpen] = useState(true);
+
+  // const changeSize = (event: Event, newValue: number | number[]) => {
+  //   setValue(newValue as number);
+  // };
   const handleClose = () => {
     setOpen(false);
     setTimeout(onClose, 500); // Wait for the animation to complete
