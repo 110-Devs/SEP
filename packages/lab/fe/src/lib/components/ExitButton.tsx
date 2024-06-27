@@ -1,8 +1,6 @@
-import React from 'react';     
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';  
+import React from 'react';
+import IconButton from '@mui/material/IconButton';
 import { ReactComponent as ExitIcon } from '../assets/exit.svg';
-
 
 interface MyButtonComponentProps {
     handleClose: () => void; // Typdefinition für handleClose

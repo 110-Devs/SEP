@@ -14,16 +14,15 @@ import CoralReef from '../../assets/CoralReef_Style.svg';
 
 // Define the props for the Templates component
 interface TemplateProps {
-  onClose: () => void;
+  onClose: () => void; // Function to close the modal
 }
 
 // The main Templates component
 const Templates: React.FC<TemplateProps> = ({ onClose }) => {
-  const [open, setOpen] = useState(true);
-  // Retrieve theme context values
-  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext);
+  const [open, setOpen] = useState(true); // State to manage the visibility of the modal
+  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext); // Accessing theme and font settings from context
 
-  // Handle closing the modal with an animation delay
+  // Close the modal and trigger onClose callback after animation
   const handleClose = () => {
     setOpen(false);
     setTimeout(onClose, 500); // Wait for the animation to complete
@@ -40,15 +39,16 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
     console.log(`Font changed to: ${event.target.value}`);
   };
 
-  // Reset to the default theme
+  // Reset theme to default
   const handleResetTheme = () => {
     resetTheme();
   };
 
-  // Reset font to default font
+  // Reset font to default
   const handleResetFont = () => {
-    setFont('Roboto'); 
+    setFont('Roboto'); // Assuming 'Roboto' is the default font
   };
+
 
   return (
     <React.Fragment>
@@ -64,7 +64,7 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
             boxShadow: 5,
             width: '70vw',
             height: '85vh',
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#cfe8fc',
+            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5',
             padding: '50px',
             pl: '100px',
             pr: '100px',
