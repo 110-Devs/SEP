@@ -22,11 +22,13 @@ import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
 import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
 
+// Define the props for the ChatWindow component
 interface ChatWindowProps {
-  handleClose: () => void; // Prop for handleClose function
+  handleClose: () => void; // Function to close the chat window
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
+  // State hooks for managing component state
   const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
@@ -37,6 +39,43 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
 
+  // Types of responses the chat can handle
+  type ResponseType = 'greeting' | 'processing' | 'completed';
+
+  // Response pools categorized by type
+  const responses = {
+    greeting: [
+      "Hello! How can I assist you today?",
+      "Hi there! What can I do for you today?",
+      "Greetings! How may I help you?",
+      "Good day! Looking for assistance?",
+      "Welcome! How can I make your day easier?"
+    ],
+    processing: [
+      "Alright, give me a few seconds to process your given task.",
+      "Processing your request, please hold on...",
+      "Just a moment while I handle that for you.",
+      "I'm on it; one moment please...",
+      "Let me take care of that right away."
+    ],
+    completed: [
+      "Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice.",
+      "I've finished processing your request. Let me know if there's anything else you need!",
+      "All done! If you need further adjustments, just tell me.",
+      "That’s sorted now! Anything else you'd like to adjust?",
+      "Your task is completed. Feel free to ask if you need more changes!",
+      "I've completed your task. If you need more help, just let me know."
+
+    ]
+  };
+  
+   // Retrieve a random response based on the type
+  function getRandomResponse(type: ResponseType): string {
+    const possibleResponses = responses[type];
+    return possibleResponses[Math.floor(Math.random() * possibleResponses.length)];
+  }
+
+   // List of prompts as an assumption of what the user might ask
   const promptExamples = [
     "Change the Color of the Add Car to Fleet Button to red",
     "Change the Font-styles to Helvetica for the entire page",
@@ -45,54 +84,86 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     "Reorder the elements in the page to have the Add Car to Fleet Button at the bottom of the page"
   ];
 
-  // Function to get a random example prompt
+  // Get a random prompt from available examples
   const getRandomPrompt = () => {
     const randomIndex = Math.floor(Math.random() * promptExamples.length);
     return promptExamples[randomIndex];
   };
 
   useEffect(() => {
-    setPlaceholder(getRandomPrompt());
+    setPlaceholder(getRandomPrompt()); // Set initial placeholder for inputfield out of promptExamples
     if (!hasTypedInitialMessage.current) {
       // Check if the initial message has already been typed
-      hasTypedInitialMessage.current = true; // Mark that we've typed the initial message
-      simulateTyping("Hello! How can I assist you today?");
+      hasTypedInitialMessage.current = true; // Prevent multiple initial greetings
+      simulateTyping(getRandomResponse('greeting')); 
     }
-  }, []); // Empty dependency array ensures this effect runs only once
+  }, []); // Run only once after the component mounts
 
+  // Effect to scroll to the last message whenever message list updates
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
+  // Handle input changes
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
-  const simulateTyping = (message: string) => {
-    setIsTyping(true);
+  // Handle key down events for sending messages with Enter key
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter' && !event.shiftKey && inputValue.trim() !== '') {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Simulate typing animation for AI responses
+  const simulateTyping = (message: string): void => {
+    setIsTyping(true); 
     setCurrentResponse('');
     let index = 0;
+    let displayMessage = '';
+  
+    // Function to update the displayed message and scroll to the last message in the list
+    const updateDisplay = () => {
+      setCurrentResponse(displayMessage);
+      if (lastMessageRef.current) {
+        lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
 
-    const typingInterval = setInterval(() => {
+    // Recursive function to type out each character one by one
+    const typeNextChar = () => {
+      // Check if there are more characters to type
       if (index < message.length) {
-        setCurrentResponse(prev => prev + message[index]);
+        // Append the next character to the displayMessage
+        displayMessage += message[index];
+        // Increment the index to move to the next character 
         index++;
-        if (lastMessageRef.current) {
-          lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
-        }
+        setTimeout(() => {
+          updateDisplay();
+          typeNextChar();
+        }, 30);
       } else {
-        clearInterval(typingInterval);
+        // Typing is complete, set typing state to false
         setIsTyping(false);
+        // Add the final message to the messages list
         setMessages(prevMessages => [...prevMessages, { content: message, isUser: false }]);
-        setCurrentResponse('');
+        // Update the current response to the full message
+        setCurrentResponse(displayMessage);
+        // Ensure the last message is scrolled into view
         if (lastMessageRef.current) {
           lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
       }
-    }, 30);
+    };
+  
+    typeNextChar();
   };
+  
+
 
   const sendPrompt = async (userPrompt: string): Promise<void> => {
     // Converting Cody-DOM; toJSON(Node, FilterList)
@@ -132,6 +203,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     }
   };
 
+  // Handle message sending logic
   const handleSendMessage = async () => {
     if (inputValue.trim() !== '') {
       setMessages(prevMessages => [...prevMessages, { content: inputValue, isUser: true }]);
@@ -139,14 +211,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
       setInputValue('');
 
       setTimeout(() => {
-        simulateTyping("Alright, give me a few seconds to process your given task");
+        simulateTyping(getRandomResponse('processing'));
         setIsProcessing(true); // Show the typing indicator for processing
 
         setTimeout(async () => {
           await sendPrompt(userPrompt);
           setIsProcessing(false); // Hide the typing indicator after processing
 
-          simulateTyping("Your order has been processed. If something is not to your satisfaction, please do not hesitate to ask me again for advice");
+          simulateTyping(getRandomResponse('completed'));
         }, 4000);
       }, 1000);
 
@@ -162,7 +234,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
           <ChatIcon />
         </HeaderIcon>
         <HeaderTitle>Goat AI</HeaderTitle>
-        <MyButtonComponent handleClose={handleClose} /> {/* Add exit button here */}
+        <MyButtonComponent handleClose={handleClose} /> 
       </HeaderContainer>
       <MessageList>
         {messages.map((message, index) => (
@@ -183,12 +255,18 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
           placeholder={placeholder}
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
         />
-        <ButtonContainer>
-          <Button onClick={handleSendMessage}>
-            <SendIcon />
-          </Button>
-        </ButtonContainer>
+      <ButtonContainer>
+        <Button
+          onClick={handleSendMessage}
+          sx={{
+            color: '#1976d2',
+          }}
+          >
+          <SendIcon />
+        </Button>
+      </ButtonContainer>
       </TextInputContainer>
     </RootContainer>
   );

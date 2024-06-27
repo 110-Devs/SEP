@@ -14,7 +14,7 @@ export const RoundButton = styled(Button)({
   width: BUTTON_SIZE,
   height: BUTTON_SIZE,
   boxShadow: 'none',
-  backgroundColor: PRIMARY_COLOR,
+  backgroundColor: "PRIMARY_COLOR",
   margin: BUTTON_MARGIN,
   '&:hover': {
     backgroundColor: HOVER_COLOR,

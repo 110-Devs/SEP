@@ -15,7 +15,7 @@ function MyButtonComponent({ handleClose }:MyButtonComponentProps) {
       
         <IconButton
           onClick={handleClose} // Fügen Sie das onClick-Ereignis hinzu
-          sx={{ position: 'absolute', top: 5, right: 5, minWidth: 'auto' }} // Fügen Sie das margin-right hinzu
+          sx={{ position: 'absolute', top: -1, right: 5, minWidth: 'auto' }} // Fügen Sie das margin-right hinzu
         >
           <ExitIcon width="35px" height="35px" />
         </IconButton>
