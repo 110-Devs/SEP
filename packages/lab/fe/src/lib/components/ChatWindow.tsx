@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect, ChangeEvent } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
 import axios from 'axios';
-import environment from '../environments/environment';
-import { request } from '../environments/modelConfig';
+import environment from '@ai/src/lib/environments/environment';
+import { modifiedRequest } from '@ai/src/lib/environments/modelConfig';
 import {
   RootContainer,
   MessageList,
@@ -14,10 +14,14 @@ import {
   AIMessage,
   HeaderContainer,
   HeaderIcon,
-  HeaderTitle
+  HeaderTitle,
 } from '../styles/ChatWindow.styles'; // Import styled components
-import { domJSON } from '../../../../ai/src/lib/truncate/domJSON';
-import { updateClassNames, ClassNameGenerator } from '../../../../ai/src/lib/truncate/stripJSON';
+import { domJSON } from '@ai/src/lib/truncate/domJSON';
+import {
+  updateClassNames,
+  ClassNameGenerator,
+} from '@ai/src/lib/truncate/stripJSON';
+import { adjustTask } from '@ai/src/lib/evaluate/adjustTask';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
 import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
@@ -28,6 +32,9 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
+  const [messages, setMessages] = useState<
+    { content: string; isUser: boolean }[]
+  >([]);
   // State hooks for managing component state
   const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -165,39 +172,50 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   
 
 
-  const sendPrompt = async (userPrompt: string): Promise<void> => {
-    // Converting Cody-DOM; toJSON(Node, FilterList)
-    const codyJSON = domJSON.toJSON(document.body);
-    console.log('Converting successful!');
+  /**
+   * Converting the current cody-DOM to JSON and sending the prompt with context via axios
+   */
 
-    // Assigning a key to every class and selector in two different Maps
-    let classMap = new Map<string, string>();
-    let selectorMap = new Map<string, string>();
+  //#root > div.MuiBox-root.css-1fa9wkz > main
+  //.css-5u1jm3
+  const sendPrompt = async (): Promise<void> => {
+    //Converting Cody-DOM; toJSON(Node, FilterList)
+    const mainTag = document.querySelector('.css-5u1jm3');
+    const selectorJSON = domJSON.toJSON(mainTag);
+    const codyJSON = domJSON.toJSON(mainTag, {
+      attributes: ['name', 'class'],
+      domProperties: [],
+    });
+
+    //Assigning a key to every class and selector in two different associative Arrays
     const classNameGenerator = new ClassNameGenerator();
-    updateClassNames(codyJSON, classMap, selectorMap, classNameGenerator);
+    const newJSON = updateClassNames(selectorJSON, classNameGenerator);
+    const anotherGenerator = new ClassNameGenerator();
+    const withoutSelectorJSON = updateClassNames(codyJSON, anotherGenerator); // JSON without data-selector attribute
+    //Converting everything to String for the prompt
+    const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    // Converting everything to String for the prompt
-    const jsonString = JSON.stringify(codyJSON);
-    const classString: string = JSON.stringify(classMap);
-    const selectorString: string = JSON.stringify(selectorMap);
-    console.log(jsonString);
-    console.log(classString);
-    console.log(selectorString);
+    console.log(newJSON)
+    console.log(newJSON.selectorMap);
 
-    // User-Prompt
-    console.log('Processing prompt:', userPrompt);
-
-    const req = request({ prompt: userPrompt });
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
+    console.log('Processing prompt:', inputValue);
+    const req = modifiedRequest({ prompt: inputValue });
 
     try {
       const response = await axios.post(API_URL, {
         prompt: `
-        ${jsonString}
+        JSON representation:
+        ${jsonString} \n
         ${req}`,
       });
-
       console.log(response.data);
+
+      //Automatic execution of the method.
+      const newTask: string = adjustTask(newJSON.selectorMap, response.data);
+      console.log(newTask);
+      eval('(' + newTask + ')()');
+
     } catch (error) {
       console.error('Error sending prompt:', error);
     }
@@ -215,7 +233,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
         setIsProcessing(true); // Show the typing indicator for processing
 
         setTimeout(async () => {
-          await sendPrompt(userPrompt);
+          await sendPrompt();
           setIsProcessing(false); // Hide the typing indicator after processing
 
           simulateTyping(getRandomResponse('completed'));

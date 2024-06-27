@@ -14,7 +14,7 @@ import CoralReef from '../../assets/CoralReef_Style.svg';
 
 // Define the props for the Templates component
 interface TemplateProps {
-  onClose: () => void;
+  onClose: () => void; // Function to close the modal
 }
 
 // The main Templates component
@@ -45,10 +45,11 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
     resetTheme();
   };
 
-  // Reset font to default font
+  // Reset font to default
   const handleResetFont = () => {
-    setFont('Roboto'); 
+    setFont('Roboto'); // Assuming 'Roboto' is the default font
   };
+
 
   return (
     <React.Fragment>
@@ -64,7 +65,7 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
             boxShadow: 5,
             width: '70vw',
             height: '85vh',
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#cfe8fc',
+            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5',
             padding: '50px',
             pl: '100px',
             pr: '100px',

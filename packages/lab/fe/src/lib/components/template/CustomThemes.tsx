@@ -2,25 +2,30 @@ import { createTheme as createMuiTheme, SxProps, ThemeOptions } from '@mui/mater
 import { merge } from 'lodash';
 import overwriteTheme from '@frontend/extensions/app/layout/theme';
 
+// Extend MUI theme interface to include custom properties
 declare module '@mui/material/styles' {
   interface Theme {
     stateView: {
-      styleOverrides: SxProps;
+      styleOverrides: SxProps; // Custom style overrides for state view
     }
   }
 
   interface ThemeOptions {
     stateView?: {
-      styleOverrides: SxProps;
+      styleOverrides: SxProps; // Custom style overrides for state view
     }
   }
 }
 
+// Function to create a custom MUI theme
 const createCustomTheme = (options: ThemeOptions): ReturnType<typeof createMuiTheme> => {
+  // Create default MUI theme based on provided options
   const defaultTheme = createMuiTheme(options);
 
+  // Merge additional customizations into options
   options = merge(
     {
+      // Custom style overrides for state view elements
       stateView: {
         styleOverrides: {
           'form.stateview .Mui-disabled': {
@@ -38,6 +43,7 @@ const createCustomTheme = (options: ThemeOptions): ReturnType<typeof createMuiTh
           },
         },
       },
+      // Typography customizations
       typography: {
         h3: {
           fontSize: '2rem',
@@ -49,6 +55,7 @@ const createCustomTheme = (options: ThemeOptions): ReturnType<typeof createMuiTh
           fontSize: '1.3rem',
         },
       },
+      // Component-specific default props overrides
       components: {
         MuiFormControl: {
           defaultProps: {
@@ -65,7 +72,7 @@ const createCustomTheme = (options: ThemeOptions): ReturnType<typeof createMuiTh
             variant: 'standard',
           },
         },
-        // Fix: No Rows Overlay not visible in empty table
+        // Additional component style overrides
         MuiGrid2: {
           styleOverrides: {
             root: {
@@ -101,13 +108,14 @@ const createCustomTheme = (options: ThemeOptions): ReturnType<typeof createMuiTh
     options
   );
 
-  const codyEngineTheme = createMuiTheme(defaultTheme, options);
+  // Merge options with theme overrides from external source
+  options = merge(options, overwriteTheme(defaultTheme));
 
-  options = merge(options, overwriteTheme(codyEngineTheme));
-
+  // Return the created MUI theme
   return createMuiTheme(options);
 };
 
+// Define different custom themes with specific palette configurations
 export const lightTheme = createCustomTheme({
   palette: {
     mode: 'light',

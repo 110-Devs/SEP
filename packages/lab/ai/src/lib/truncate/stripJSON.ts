@@ -1,4 +1,3 @@
-// script.ts
 interface JsonNode {
     nodeType?: number;
     tagName?: string;
@@ -6,6 +5,10 @@ interface JsonNode {
     childNodes?: JsonNode[];
     nodeValue?: string;
 }
+
+interface AssociativeArray {
+    [key: string]: string
+ }
 
 export class ClassNameGenerator {
 
@@ -27,47 +30,46 @@ export class ClassNameGenerator {
     }
 }
 
-
 export function updateClassNames(node: JsonNode,
-    classMap: Map<string, string>,
-    selectorMap: Map<string, string>,
     classNameGenerator: ClassNameGenerator,
-    parentSelector = ''
-): void {
+    parentSelector = '',
+    classMap: AssociativeArray = {},
+    selectorMap: AssociativeArray = {},
+) {
+    const newNode = { ...node, attributes: { ...node.attributes } }; 
+    let currentNumber = '';
+    const currentSelector = getSelectorString(node);
 
-
-    const currentNumber = classNameGenerator.generateClassName();
-    const currentSelector = getSelectorString(node, parentSelector ? parentSelector.split(' > ') : []);
-
-
-    if (node.attributes && node.attributes.class) {
-        classMap.set(currentNumber, node.attributes.class);
-        selectorMap.set(currentNumber,currentSelector);
-        node.attributes.class = currentNumber;
-
+    if (currentSelector == '.MuiGrid-container') {
+        return {newNode, classMap, selectorMap};
     }
 
-    if (node.childNodes) {
-        for (const child of node.childNodes) {
-            updateClassNames(child, classMap, selectorMap, classNameGenerator);
-        }
+    if (newNode.attributes && newNode.attributes.class) {
+        currentNumber = classNameGenerator.generateClassName();
+        classMap[currentNumber] = newNode.attributes.class;
+        selectorMap[currentNumber] = currentSelector;
+        newNode.attributes.class = currentNumber;
     }
+
+    if (newNode.childNodes) {
+        newNode.childNodes = newNode.childNodes.map(child =>
+            updateClassNames(child, classNameGenerator, currentSelector, classMap, selectorMap).newNode
+        );
+    }
+
+    return {newNode, classMap, selectorMap};
 }
 
-function getSelectorString(node: JsonNode, path: string[] = []): string {
-    let selector: any = node.tagName;
+
+function getSelectorString(node: JsonNode): string {
+    let selector = '';
 
     if (node.attributes) {
-        if (node.attributes.id) {
-            selector += `#${node.attributes.id}`;
-        }
-        if (node.attributes.class) {
-            const classes = node.attributes.class.split(' ').join('.');
-            selector += `.${classes}`;
+        if (node.attributes['data-selector']) {
+            selector = node.attributes['data-selector'];
         }
     }
 
-    path.push(selector);
-
-    return path.join(' > ');
+    return selector;
 }
+

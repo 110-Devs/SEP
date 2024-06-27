@@ -23,3 +23,4 @@ export const RoundButton = styled(Button)({
 });
 
 export const ICON_SIZE = '40px';
+

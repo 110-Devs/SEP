@@ -38,24 +38,22 @@ import ErrorBoundary from '@frontend/app/components/core/ErrorBoundary';
 import AiInterface from 'packages/lab/fe/src/lib/components/AiInterface';
 
 export function App() {
-  const Layout = (props: React.PropsWithChildren) => {
-    return (
-      <>
-        <User>
-          <PageDataProvider>
-              <ToggleColorMode>
-                <SnackbarProvider maxSnack={3}>
-                  <MainLayout>
-                    <ScrollToTop />
-                    <Outlet />
-                    <AiInterface />
-                  </MainLayout>
-                </SnackbarProvider>
-              </ToggleColorMode>
-          </PageDataProvider>
-        </User>
-      </>
-    );
+  const Layout = (props: React.PropsWithChildren<Record<never, any>>) => {
+    return <>
+      <User>
+        <PageDataProvider>
+          <ToggleColorMode>
+            <SnackbarProvider maxSnack={3} >
+              <MainLayout>
+                <ScrollToTop />
+                <Outlet />
+              </MainLayout>
+              <AiInterface />
+            </SnackbarProvider>
+          </ToggleColorMode>
+        </PageDataProvider>
+      </User>
+    </>
   };
 
   const routeObjects: RouteObject[] = Object.values(pages).map((p) => ({

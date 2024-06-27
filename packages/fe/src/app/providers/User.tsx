@@ -18,7 +18,7 @@ interface OwnProps {
 
 }
 
-type UserProps = OwnProps & PropsWithChildren;
+type UserProps = OwnProps & PropsWithChildren<Record<never, any>>;
 
 const sessionPersonaStr = sessionStorage.getItem(PERSONA_STORAGE_KEY);
 

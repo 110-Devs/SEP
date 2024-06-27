@@ -2,6 +2,12 @@
  * Represents the environment configuration for the application.
  */
 const environment = {
+
+  /**
+   * Authorization for requests to the AI server
+   */
+  TOKEN: 'w3WcLmczSkWMsvA5gAVi0AmKyumzqAKqlRDb5ndR6gLUrB+lJcqJQ2+I27i4PZ21',
+
   /**
    * The port on which the application will run.
    */
@@ -26,12 +32,9 @@ const environment = {
    * The system prompt used in the application.
    */
   SYSTEM_PROMPT:
-    "Your task is to create JavaScript functions to modify the webpage based on user prompts." +
-    "You will receive a JSON representation of the webpage's structure, including class and ID attributes for each element." +
-    "You will also receive one Map where the key is assigned to the class of each element and another Map where the key is assigned to the selector of each element of the webpage." +
-    "The class of each element in the JSON representation is replaced with a key. You can use the two Maps to find the original class and the selector for that element." + 
-    "Write functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly." +
-    "Do not forget to convert the replaced classes to their original when writing the class.",
+    "Your task is to create JavaScript functions to modify the webpage based on user prompts. " +
+    "Above is a JSON representation of the webpage's structure, including class attributes and the shortest selector for each element. This is only the main-tag and every child node inside the main-tag you are given. So only do changes within the main-tag (class: A01). " + 
+    "Write functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly.",
 
   /**
    * The name of the model used in the application.

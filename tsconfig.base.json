@@ -30,7 +30,8 @@
       "@event-engine/infrastructure/*": ["packages/infrastructure/src/lib/*"],
       "@event-engine/messaging/*": ["packages/messaging/src/lib/*"],
       "@frontend/*": ["packages/fe/src/*"],
-      "@server/*": ["packages/be/src/*"]
+      "@server/*": ["packages/be/src/*"],
+      "@ai/*" : ["packages/lab/ai/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
