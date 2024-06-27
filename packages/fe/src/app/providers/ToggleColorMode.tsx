@@ -173,6 +173,7 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
             },
           },
         };
+        break;
       case 'blueOcean':
         themeOptions = blueOceanTheme;
         break;
