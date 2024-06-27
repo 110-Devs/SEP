@@ -53,7 +53,7 @@ export default function PlaygroundSpeedDial() {
   // Array of actions for the SpeedDial
   const actions = [
     { icon: <Build />, name: 'Drag & Drop', function: toggleRangeSliderWindow },
-    { icon: <Brush />, name: 'Costumize', function: toggleCostumizeOverlay },
+    { icon: <Brush />, name: 'Customize', function: toggleCostumizeOverlay },
     { icon: <Tab />, name: 'Templates', function: toggleTemplatesOverlay },
     { icon: <Psychology />, name: 'AI Chat', function: toggleChatInputBox },
   ];

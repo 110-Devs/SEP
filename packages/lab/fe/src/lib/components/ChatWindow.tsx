@@ -32,9 +32,6 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
-  const [messages, setMessages] = useState<
-    { content: string; isUser: boolean }[]
-  >([]);
   // State hooks for managing component state
   const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState('');
