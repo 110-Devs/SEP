@@ -19,10 +19,11 @@ interface TemplateProps {
 
 // The main Templates component
 const Templates: React.FC<TemplateProps> = ({ onClose }) => {
-  const [open, setOpen] = useState(true); // State to manage the visibility of the modal
-  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext); // Accessing theme and font settings from context
+  const [open, setOpen] = useState(true);
+  // Retrieve theme context values
+  const { setTheme, resetTheme, setFont, font, mode } = useContext(ColorModeContext);
 
-  // Close the modal and trigger onClose callback after animation
+  // Handle closing the modal with an animation delay
   const handleClose = () => {
     setOpen(false);
     setTimeout(onClose, 500); // Wait for the animation to complete
@@ -39,7 +40,7 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
     console.log(`Font changed to: ${event.target.value}`);
   };
 
-  // Reset theme to default
+  // Reset to the default theme
   const handleResetTheme = () => {
     resetTheme();
   };

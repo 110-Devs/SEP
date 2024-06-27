@@ -33,10 +33,10 @@ type ThemeType =
   | 'black'
   | 'white'
   | 'custom'
-  | 'darkCustom',
-  | 'blueOcean',
+  | 'darkCustom'
+  | 'blueOcean'
   | 'darkBlueOcean'
-  | 'coralReef,
+  | 'coralReef'
   | 'darkCoralReef';
 
   // Define the structure of the ColorModeContext

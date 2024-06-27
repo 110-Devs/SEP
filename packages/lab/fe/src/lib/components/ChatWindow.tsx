@@ -169,6 +169,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   
     typeNextChar();
   };
+  
+
 
   /**
    * Converting the current cody-DOM to JSON and sending the prompt with context via axios
