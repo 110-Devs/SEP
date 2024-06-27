@@ -12,10 +12,15 @@ import {
   darkPurpleTheme,
   blackTheme,
   whiteTheme,
-} from '../../../../lab/fe/src/lib/components/template/CustomThemes'; // Adjust the import path as necessary
+  blueOceanTheme,
+  darkBlueOceanTheme,
+  coralReefTheme,
+  darkCoralReefTheme,
+} from '../../../../lab/fe/src/lib/components/template/CustomThemes';
 import tinycolor from 'tinycolor2';
 
 export type FontType = 'Roboto' | 'Montserrat' | 'Source Code Pro' | 'Ubuntu' | 'Dancing Script' | 'Kalam';
+
 type ThemeType =
   | 'light'
   | 'dark'
@@ -28,8 +33,13 @@ type ThemeType =
   | 'black'
   | 'white'
   | 'custom'
-  | 'darkCustom';
+  | 'darkCustom',
+  | 'blueOcean',
+  | 'darkBlueOcean'
+  | 'coralReef,
+  | 'darkCoralReef';
 
+  // Define the structure of the ColorModeContext
 interface ColorModeContextProps {
   mode: ThemeType;
   font: FontType;
@@ -41,6 +51,7 @@ interface ColorModeContextProps {
   setFont: (font: FontType) => void;
 }
 
+// Create the ColorModeContext with default values
 export const ColorModeContext = createContext<ColorModeContextProps>({
   mode: 'light',
   font: 'Roboto',
@@ -52,6 +63,7 @@ export const ColorModeContext = createContext<ColorModeContextProps>({
   setFont: () => {},
 });
 
+// Helper function to merge typography with selected font family
 const mergeTypographyWithFontFamily = (baseTypography: any, fontFamily: string) => {
   const defaultTypography = {
     h1: {},
@@ -89,7 +101,9 @@ const mergeTypographyWithFontFamily = (baseTypography: any, fontFamily: string) 
   };
 };
 
+// Main component to toggle color modes and fonts
 const ToggleColorMode = ({ children }: { children: ReactNode }) => {
+  // States to manage the current theme and font
   const [mode, setMode] = useState<ThemeType>('light');
   const [font, setFont] = useState<FontType>('Roboto');
   const [customColor, setCustomColor] = useState<string>('#ffffff');
@@ -99,14 +113,15 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
     font,
     customColor,
     toggleColorMode: () => {
+      // Toggle between light and dark mode
       setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
     },
     setTheme: (theme: ThemeType) => {
-      setMode(theme);
+      setMode(theme); // Set the selected theme
     },
     setCustomColor,
     resetTheme: () => {
-      setMode('light');
+      setMode('light'); // Reset to light theme
     },
     setFont,
   }), [mode, font, customColor]);
@@ -114,6 +129,7 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
   const selectedTheme = useMemo(() => {
     let themeOptions: ThemeOptions;
 
+    // Choose the theme options based on the current mode
     switch (mode) {
       case 'dark':
         themeOptions = darkTheme;
@@ -157,12 +173,23 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
             },
           },
         };
+      case 'blueOcean':
+        themeOptions = blueOceanTheme;
+        break;
+      case 'darkBlueOcean':
+        themeOptions = darkBlueOceanTheme;
+        break;
+      case 'coralReef':
+        themeOptions = coralReefTheme;
+        break;
+      case 'darkCoralReef':
+        themeOptions = darkCoralReefTheme;
         break;
       case 'light':
       default:
         themeOptions = lightTheme;
     }
-
+    // Create the theme with merged typography and selected font
     const theme = createTheme({
       ...themeOptions,
       typography: mergeTypographyWithFontFamily(themeOptions.typography || {}, font),
@@ -172,6 +199,7 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
   }, [mode, font, customColor]);
 
   return (
+    // Provide the color mode context to child components
     <ColorModeContext.Provider value={contextValue}>
       <MuiThemeProvider theme={selectedTheme}>
         {children}

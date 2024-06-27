@@ -235,3 +235,51 @@ export const whiteTheme = createCustomTheme({
     },
   },
 });
+
+export const blueOceanTheme = createCustomTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#87CEEB',
+    },
+    secondary: {
+      main: '#013220',
+    },
+  },
+});
+
+export const darkBlueOceanTheme = createCustomTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#5C87CC',
+    },
+    secondary: {
+      main: '#000033',
+    },
+  },
+});
+
+export const coralReefTheme = createCustomTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#FF7F50',
+    },
+    secondary: {
+      main: '#FFDAB9',
+    },
+  },
+});
+
+export const darkCoralReefTheme = createCustomTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#CD5C5C',
+    },
+    secondary: {
+      main: '#8B4513',
+    },
+  },
+});
