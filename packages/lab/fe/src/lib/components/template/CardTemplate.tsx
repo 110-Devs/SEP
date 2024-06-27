@@ -1,4 +1,3 @@
-// CardTemplate.js
 import React from 'react';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
@@ -7,15 +6,21 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
-//Elemente die wichtig für die Kartenerstellung sind
+
+type ThemeType = 'light' | 'dark' | 'pink' | 'green' | 'purple' | 'black' | 'white';
+
 interface CardProps {
   title: string;
   image: string;
-  text: string;
-  action: () => void;
+  action: (theme: ThemeType) => void;
+  theme: ThemeType;
 }
-//Funktion die Card Komponenten erstellt
-const CardTemplate: React.FC<CardProps> = ({ title, image, text, action }) => {
+
+const CardTemplate: React.FC<CardProps> = ({ title, image, action, theme }) => {
+  const handleApply = () => {
+    action(theme); 
+  };
+
   return (
     <Card
       sx={{
@@ -29,24 +34,19 @@ const CardTemplate: React.FC<CardProps> = ({ title, image, text, action }) => {
         <Typography gutterBottom variant="h5" component="div" color="white">
           {title}
         </Typography>
-        <Typography variant="body2" color="white">
-          {text}
-        </Typography>
         <Divider sx={{ borderColor: 'white' }}/>
       </CardContent>
 
       <CardActions>
-        
         <Button
           variant="contained"
-          onClick={action}
-          
+          onClick={handleApply} // Use handleApply
           sx={{
-            backgroundColor: 'rgba(0, 170, 200)', 
+            backgroundColor: 'rgba(0, 170, 200)',
             ml:"10px",
             color: 'white',
             '&:hover': {
-              backgroundColor: 'rgba(113, 249, 115, 1)', 
+              backgroundColor: 'rgba(113, 249, 115, 1)',
               color: 'black',
             },
           }}
