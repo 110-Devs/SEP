@@ -12,7 +12,7 @@ const bounce = keyframes`
 
 const TypingDots = styled.div`
   display: flex;
-  justify-content: right;
+  justify-content: left;
   align-items: center;
   height: 24px;
 `;

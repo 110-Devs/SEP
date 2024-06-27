@@ -1,53 +1,49 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
 
-type ThemeType = 'light' | 'dark' | 'pink' | 'green' | 'purple' | 'black' | 'white';
+// Define the possible theme types
+type ThemeType = 'light' | 'dark' | 'pink' | 'green' | 'purple' | 'black' | 'white' | 'blueOcean' | 'coralReef';
 
+// Define the props for the CardTemplate component
 interface CardProps {
-  title: string;
-  image: string;
-  action: (theme: ThemeType) => void;
-  theme: ThemeType;
+  title: string; // Title of the card
+  image: string; // Background image for the card
+  action: (theme: ThemeType) => void; // Function to apply the theme
+  theme: ThemeType; // Theme associated with this card
 }
 
+// CardTemplate component
 const CardTemplate: React.FC<CardProps> = ({ title, image, action, theme }) => {
+  // Handle the apply button click
   const handleApply = () => {
-    action(theme); 
+    action(theme); // Call the action function with the current theme
   };
 
   return (
     <Card
       sx={{
         maxWidth: 568,
-        backgroundColor: 'rgba(0, 120, 200)',
+        height: '200px', 
+        display: 'flex',
+        flexDirection: 'column', 
+        background: `url(${image}) center / cover no-repeat`, 
         boxShadow: 5,
       }}
     >
-      <CardMedia sx={{ height: 240 }} image='../../assets/Test.jpg' title="Template" />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div" color="white">
-          {title}
-        </Typography>
-        <Divider sx={{ borderColor: 'white' }}/>
+      <CardContent sx={{ flexGrow: 1, color: 'black', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       </CardContent>
 
-      <CardActions>
+      <CardActions sx={{ justifyContent: 'center' }}>
         <Button
           variant="contained"
-          onClick={handleApply} // Use handleApply
+          onClick={handleApply}
           sx={{
-            backgroundColor: 'rgba(0, 170, 200)',
-            ml:"10px",
-            color: 'white',
             '&:hover': {
-              backgroundColor: 'rgba(113, 249, 115, 1)',
-              color: 'black',
+              backgroundColor: 'lightblue',
+              color: "black",
             },
           }}
         >

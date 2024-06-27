@@ -26,6 +26,7 @@ export const RootContainer = styled('div')({
     padding: '10px',
     boxSizing: 'border-box',
     transition: CONTAINER_TRANSITION,
+    zIndex: 1000,
 });
 
 export const HeaderContainer = styled('div')({
@@ -38,7 +39,7 @@ export const HeaderContainer = styled('div')({
     backgroundColor: '#E3F2FD',
     borderTopLeftRadius: CONTAINER_BORDER_RADIUS,
     borderTopRightRadius: CONTAINER_BORDER_RADIUS,
-    position: 'relative', // Add position relative to position the exit button absolutely
+    position: 'relative',
 });
 
 export const HeaderIcon = styled('div')({
@@ -46,6 +47,7 @@ export const HeaderIcon = styled('div')({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: '10px',
+    color: 'black',
 });
 
 export const HeaderTitle = styled('div')({
@@ -70,24 +72,26 @@ export const MessageList = styled('div')({
     backgroundColor: '#e3f2fd',
 }); */
 
-export const UserMessage = styled('div')({
-    padding: '12px',
-    marginBottom: '8px',
-    borderRadius: '16px',
-    backgroundColor: '#DCF8C6', 
-    alignSelf: 'flex-end', 
-    marginRight: '55%', 
-    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-  });
-  
 export const AIMessage = styled('div')({
     padding: '12px',
     marginBottom: '8px',
     borderRadius: '16px',
     backgroundColor: '#E3F2FD', 
+    alignSelf: 'flex-end', 
+    marginRight: '55%', 
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+    color: 'black'
+  });
+  
+export const UserMessage = styled('div')({
+    padding: '12px',
+    marginBottom: '8px',
+    borderRadius: '16px',
+    backgroundColor: '#DCF8C6', 
     alignSelf: 'flex-start', 
     marginLeft: '55%',  
     boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+    color: 'black'
 });
   
 
