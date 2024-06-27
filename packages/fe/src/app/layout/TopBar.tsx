@@ -54,7 +54,19 @@ const TopBar = (props: TopBarProps) => {
         break;
       case 'white':
         setTheme('black');
-        break;  
+        break;
+      case 'blueOcean':
+        setTheme('darkBlueOcean');
+        break;
+      case 'darkBlueOcean': 
+        setTheme('blueOcean');
+        break;
+      case 'coralReef':
+        setTheme('darkCoralReef');
+        break;
+      case 'darkCoralReef':
+        setTheme('coralReef');
+        break;
       default:
         setTheme('light');
     }
@@ -73,8 +85,8 @@ const TopBar = (props: TopBarProps) => {
         <Breadcrumbs />
         <Box component={"div"} sx={{ flexGrow: 1 }} />
         <IconButton aria-label="Toggle light/dark mode" onClick={handleToggle}>
-          {(mode === 'light' || mode === 'pink' || mode === 'green' || mode === 'purple' || mode === 'black') && <LightModeIcon sx={{ color: 'white' }} />}
-          {(mode === 'dark' || mode === 'darkPink' || mode === 'darkGreen' || mode === 'darkPurple' || mode === 'white') && <DarkModeIcon sx={{ color: 'black' }} />}
+          {(mode === 'light' || mode === 'pink' || mode === 'green' || mode === 'purple' || mode === 'black' || mode === 'blueOcean' || mode === 'coralReef') && <LightModeIcon sx={{ color: 'white' }} />}
+          {(mode === 'dark' || mode === 'darkPink' || mode === 'darkGreen' || mode === 'darkPurple' || mode === 'white' || mode === "darkBlueOcean" || mode === "darkCoralReef") && <DarkModeIcon sx={{ color: 'black' }} />}
         </IconButton>
         {!sideBarPersistent && (
           <IconButton onClick={() => props.onOpenSidebar(!props.sidebarOpen)} sx={{ color: mode === 'dark' ? 'black' : 'white' }}>

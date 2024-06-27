@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
@@ -15,13 +15,17 @@ import ExitButton from '../ExitButton';
 import { usePageData } from '@frontend/hooks/use-page-data';
 import { useCoordinateStore, useComponentOrder } from '@cody-engine/lab/dnd';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { ColorModeContext } from '@frontend/app/providers/ToggleColorMode';
+import { Div } from '../drag-drop/DragDropOptions';
 
+// Styles for list item text
 const listItemTextStyle = {
-  fontWeight: 'bold', // Fett
-  fontSize: '25', // Größere Schriftgröße
-  // Weitere Stile hier hinzufügen
+  fontWeight: 'bold',
+  fontSize: '25px',
+  color: '#000000',
 };
 
+// Function to handle list item click
 const handleListItemClick = (text: string) => {
   console.log(`Clicked on: ${text}`);
 };
@@ -43,18 +47,21 @@ export default function VersionControl() {
     fetchMenuItems();
   }, [pageRoute, coordinates, order]);
   
+  const { mode } = useContext(ColorModeContext); // Accessing color mode from context
+
+  // Toggle drawer state
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  // Render the list of saved items in the drawer
   const list = () => (
     <Box
-      sx={{ width: 460, backgroundColor: '#cfe8fc', }}
+      sx={{ width: 460, backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5' }}
       role="presentation"
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}
     >
-      
       <ExitButton handleClose={toggleDrawer}/>
       <List sx={{mt: "35px"}}>
         {menuItems.slice().reverse().map((MenuItems, index) => (
@@ -69,32 +76,33 @@ export default function VersionControl() {
           </ListItem>
         ))}
       </List>
-      
     </Box>
   );
 
   return (
     <div>
-      <Button 
+      <Button
         sx={{
           position: 'fixed',
           bottom: 0,
           right: 100,
-          
-        }} 
-        onClick={toggleDrawer}>
-          <HistoryIcon 
-          sx={{
-            width: '70px', // Beispielbreite
-            height: '70px',
-            }} />
-        </Button>
-      <Drawer
-        anchor="right"
-        open={open}
-        onClose={toggleDrawer}
+        }}
+        onClick={toggleDrawer}
       >
-        {list()}
+        <HistoryIcon
+          sx={{
+            width: '70px',
+            height: '70px',
+          }}
+        />
+      </Button>
+      {/* Drawer component */}
+      <Drawer
+        anchor="right" // Drawer anchored to the right
+        open={open} // State to control drawer open/close
+        onClose={toggleDrawer} // Function to close drawer
+      >
+        {list()} {/* Render the list inside the drawer */}
       </Drawer>
     </div>
   );
