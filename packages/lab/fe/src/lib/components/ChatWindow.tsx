@@ -248,7 +248,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
         <HeaderIcon>
           <ChatIcon />
         </HeaderIcon>
-        <HeaderTitle>Goat AI</HeaderTitle>
+        <HeaderTitle>Cody 110D</HeaderTitle>
         <MyButtonComponent handleClose={handleClose} /> 
       </HeaderContainer>
       <MessageList>

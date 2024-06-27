@@ -96,7 +96,7 @@ const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
         <Grid container spacing={2} alignItems="center">
           {/* Label for 'Big' */}
           <Grid item>
-            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Big</Div>
+            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Small</Div>
           </Grid>
           {/* Slider component */}
           <Grid item xs>
@@ -113,7 +113,7 @@ const DragDropOptions: React.FC<DragDropOptionsProps> = ({ onClose }) => {
           </Grid>
           {/* Label for 'Small' */}
           <Grid item>
-            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Small</Div>
+            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Big</Div>
           </Grid>
         </Grid>
 
