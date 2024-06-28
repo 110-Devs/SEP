@@ -9,7 +9,6 @@ function MenuContainer() {
       container
       justifyContent="flex-end"
       alignItems="flex-end"
-      style={{ height: '100vh' }}
     >
       <Grid item>
         <SpeedDialMenu />

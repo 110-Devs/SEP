@@ -32,8 +32,11 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
-  // State hooks for managing component state
-  const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
+  // Initialize messages state from local storage or set to empty array
+  const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>(() => {
+    const storedMessages = localStorage.getItem('chatMessages');
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -95,18 +98,22 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   };
 
   useEffect(() => {
-    setPlaceholder(getRandomPrompt()); // Set initial placeholder for inputfield out of promptExamples
+    setPlaceholder(getRandomPrompt());
     if (!hasTypedInitialMessage.current) {
-      // Check if the initial message has already been typed
-      hasTypedInitialMessage.current = true; // Prevent multiple initial greetings
-      simulateTyping(getRandomResponse('greeting')); 
+      hasTypedInitialMessage.current = true;
+      simulateTyping(getRandomResponse('greeting'));
     }
-  }, []); // Run only once after the component mounts
+  }, []);
+
+  // Update local storage whenever messages change
+  useEffect(() => {
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
 
   // Effect to scroll to the last message whenever message list updates
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+      lastMessageRef.current.scrollIntoView();
     }
   }, [messages]);
 
