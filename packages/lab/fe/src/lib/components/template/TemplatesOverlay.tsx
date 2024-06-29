@@ -17,6 +17,14 @@ interface TemplateProps {
   onClose: () => void; // Function to close the modal
 }
 
+const fontOptions = [
+  { label: 'Roboto', fontFamily: 'Roboto, sans-serif', previewText: 'Roboto' },
+  { label: 'Montserrat', fontFamily: 'Montserrat, sans-serif', previewText: 'Montserrat' },
+  { label: 'Dancing Script', fontFamily: 'Dancing Script, cursive', previewText: 'Dancing Script' },
+  { label: 'Kalam', fontFamily: 'Kalam, cursive', previewText: 'Kalam' },
+  { label: 'Source Code Pro', fontFamily: 'Source Code Pro, monospace', previewText: 'Source Code Pro' },
+];
+
 // The main Templates component
 const Templates: React.FC<TemplateProps> = ({ onClose }) => {
   const [open, setOpen] = useState(true);
@@ -65,7 +73,7 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
             boxShadow: 5,
             width: '70vw',
             height: '85vh',
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5',
+            backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5',
             padding: '50px',
             pl: '100px',
             pr: '100px',
@@ -89,33 +97,33 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
               onChange={handleFontChange}
               label="Font Style"
               sx={{
-                color: 'black', 
+                color: 'black',
                 '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'black', 
+                  borderColor: 'black',
                 },
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'black', 
-                }
+                  borderColor: 'black',
+                },
               }}
               MenuProps={{
                 sx: {
                   '& .MuiPaper-root': {
-                    backgroundColor: 'white', 
-                  '& .MuiMenuItem-root': {
-                    color: 'black', 
-                  }
-                }
-              }
-            }}
-          >
-            {/* Different font options */}
-            <MenuItem value="Roboto">Roboto</MenuItem>
-            <MenuItem value="Montserrat">Montserrat</MenuItem>
-            <MenuItem value="Dancing Script">Dancing Script</MenuItem>
-            <MenuItem value="Kalam">Kalam</MenuItem>
-            <MenuItem value="Source Code Pro">Source Code Pro</MenuItem>
-          </Select>
-        </FormControl>
+                    backgroundColor: 'white',
+                    '& .MuiMenuItem-root': {
+                      color: 'black',
+                    },
+                  },
+                },
+              }}
+            >
+              {/* Different font options */}
+              {fontOptions.map((option) => (
+                <MenuItem key={option.label} value={option.label} style={{ fontFamily: option.fontFamily }}>
+                  {option.previewText}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {/* Grid to display theme cards */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12} md={6}>

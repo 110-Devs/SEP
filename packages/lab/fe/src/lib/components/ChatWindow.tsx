@@ -45,6 +45,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const inputField = useRef<HTMLInputElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
+  const lastMessageWasGreeting = useRef(false);
 
   // Types of responses the chat can handle
   type ResponseType = 'greeting' | 'processing' | 'completed';
@@ -99,7 +100,22 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
 
   useEffect(() => {
     setPlaceholder(getRandomPrompt());
-    if (!hasTypedInitialMessage.current) {
+
+    // Load stored messages from localStorage
+    const storedMessages: { content: string; isUser: boolean }[] = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+
+    // Check if the last stored message was from the AI and was a greeting
+    if (storedMessages.length > 0 && !storedMessages[storedMessages.length - 1].isUser) {
+      const lastAIMessage = storedMessages[storedMessages.length - 1].content;
+      if (responses.greeting.includes(lastAIMessage)) {
+        lastMessageWasGreeting.current = true;
+      } else {
+        lastMessageWasGreeting.current = false;
+      }
+    }
+
+    // Simulate greeting message if no stored messages or last message was not a greeting
+    if (!hasTypedInitialMessage.current && !lastMessageWasGreeting.current) {
       hasTypedInitialMessage.current = true;
       simulateTyping(getRandomResponse('greeting'));
     }
