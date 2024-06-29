@@ -10,19 +10,25 @@ import HistoryIcon from '@mui/icons-material/History';
 import PreviewIcon from '@mui/icons-material/Preview';
 import ListItemText from '@mui/material/ListItemText';
 import { initializeMenuItems, menuItems } from './save-files';
-import { Divider } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import ExitButton from '../ExitButton';
 import { usePageData } from '@frontend/hooks/use-page-data';
-import { useCoordinateStore, useComponentOrder } from '@cody-engine/lab/dnd';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { useCoordinateStore, useComponentOrder, useRouteStore } from '@cody-engine/lab/dnd';
 import { ColorModeContext } from '@frontend/app/providers/ToggleColorMode';
-import { Div } from '../drag-drop/DragDropOptions';
 
 // Styles for list item text
+
 const listItemTextStyle = {
-  fontWeight: 'bold',
-  fontSize: '25px',
+  fontSize: '16px',
   color: '#000000',
+  overflowWrap: 'break-word',
+};
+
+const listItemDateStyle = {
+  fontSize: '14px',
+  color: '#000000',
+  textAlign: 'right',
+  marginTop: '8px',
 };
 
 // Function to handle list item click
@@ -32,8 +38,7 @@ const handleListItemClick = (text: string) => {
 
 export default function VersionControl() {
   const [open, setOpen] = React.useState(false);
-  const [pageData,] = usePageData();
-  const pageRoute = Object.keys(pageData)[0];
+  const route = useRouteStore((state) => state.currentRoute);
   const addCoordinates = useCoordinateStore((state) => state.addCoordinates);
   const setOrder = useComponentOrder((state) => state.setOrder);
   const coordinates = useCoordinateStore((state) => state.coordinates);
@@ -41,11 +46,14 @@ export default function VersionControl() {
 
   useEffect(() => {
     const fetchMenuItems = async () => {
-      await initializeMenuItems(pageRoute, addCoordinates, setOrder);
+      if (route === null) {
+        return
+      }
+      await initializeMenuItems(route, addCoordinates, setOrder);
     };
 
     fetchMenuItems();
-  }, [pageRoute, coordinates, order]);
+  }, [route, coordinates, order, menuItems]);
   
   const { mode } = useContext(ColorModeContext); // Accessing color mode from context
 
@@ -57,21 +65,33 @@ export default function VersionControl() {
   // Render the list of saved items in the drawer
   const list = () => (
     <Box
-      sx={{ width: 460, backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5' }}
+      sx={{
+        width: 460,
+        backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5',
+        overflowX: 'hidden',
+        overflowY: 'auto', // Enable vertical scrolling
+        height: '100vh', // Adjust height as needed
+      }}
       role="presentation"
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}
     >
-      <ExitButton handleClose={toggleDrawer}/>
-      <List sx={{mt: "35px"}}>
+      <ExitButton handleClose={toggleDrawer} />
+      <List sx={{ mt: '35px' }}>
         {menuItems.slice().reverse().map((MenuItems, index) => (
           <ListItem key={index} disablePadding>
             <ListItemButton onClick={() => MenuItems.function()}>
               <ListItemIcon>
                 {MenuItems.icon}
               </ListItemIcon>
-              <ListItemText primary={MenuItems.text} sx={listItemTextStyle} />
-              <ListItemText secondary={`Modified: ${MenuItems.date.toLocaleString()}`} sx={listItemTextStyle}/>
+              <Grid container direction="column" sx={{ flexGrow: 1 }}>
+                <Grid item xs>
+                  <Typography sx={listItemTextStyle}>{MenuItems.text}</Typography>
+                </Grid>
+                <Grid item xs>
+                  <Typography sx={listItemDateStyle}>{`Modified: ${MenuItems.date.toLocaleString()}`}</Typography>
+                </Grid>
+              </Grid>
             </ListItemButton>
           </ListItem>
         ))}
