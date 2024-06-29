@@ -17,7 +17,7 @@ import type { Coordinates } from '@dnd-kit/utilities';
 import { usePageData } from '@frontend/hooks/use-page-data';
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useCoordinateStore } from '../../store';
+import { useCoordinateStore, useRouteStore } from '../../store';
 import { Draggable } from '../Draggable';
 import { Grid } from '../Grid';
 import { Wrapper } from '../Wrapper';
@@ -46,8 +46,7 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     return savedState === 'true';
   });
 
-  const [pageData] = usePageData();
-  const pageRoute = Object.keys(pageData)[0];
+  const route = useRouteStore((state) => state.currentRoute);
 
   useEffect(() => {
     /**
@@ -110,11 +109,11 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     const fetchModifications = async () => {
       let response;
       const collection = '__drag-and-drop';
-      const route = pageRoute;
+      const pageRoute = route;
 
       try {
         response = await axios.get(
-          `http://localhost:3000/api/get-dnd-modifications?collection=${collection}&route=${route}`
+          `http://localhost:3000/api/get-dnd-modifications?collection=${collection}&route=${pageRoute}`
         );
       } catch (error) {
         console.error(error);
@@ -138,7 +137,7 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     };
 
     fetchModifications();
-  }, [pageRoute, children]);
+  }, [route, children]);
 
   const handleDragEnd = (id: string, delta: Coordinates) => {
     addCoordinates(id, {
@@ -148,11 +147,11 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
 
     axios.post('http://localhost:3000/api/save', {
       collection: '__drag-and-drop',
-      route: pageRoute,
+      route: route,
       modifications: {
         elementId: id,
-        x: coordinates[id].x + delta.x,
-        y: coordinates[id].y + delta.y,
+        x: coordinates[id].x,
+        y: coordinates[id].y,
       },
     });
   };
