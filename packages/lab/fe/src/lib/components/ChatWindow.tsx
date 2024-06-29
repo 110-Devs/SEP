@@ -235,8 +235,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
       console.log(newTask);
       eval('(' + newTask + ')()');
+      simulateTyping(getRandomResponse('completed'));
 
     } catch (error) {
+      simulateTyping("Error: The given task could not be processed. Please paraphrase the prompt or try again.");
       console.error('Error sending prompt:', error);
     }
   };
@@ -245,7 +247,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const handleSendMessage = async () => {
     if (inputValue.trim() !== '') {
       setMessages(prevMessages => [...prevMessages, { content: inputValue, isUser: true }]);
-      const userPrompt = inputValue;
       setInputValue('');
 
       setTimeout(() => {
@@ -256,7 +257,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
           await sendPrompt();
           setIsProcessing(false); // Hide the typing indicator after processing
 
-          simulateTyping(getRandomResponse('completed'));
         }, 4000);
       }, 1000);
 

@@ -34,7 +34,7 @@ const environment = {
   SYSTEM_PROMPT:
     "Your task is to create JavaScript functions to modify the webpage based on user prompts. " +
     "Above is a JSON representation of the webpage's structure, including class attributes and the shortest selector for each element. This is only the main-tag and every child node inside the main-tag you are given. So only do changes within the main-tag (class: A01). " + 
-    "Write functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly.",
+    "Write only one functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly.",
 
   /**
    * The name of the model used in the application.
