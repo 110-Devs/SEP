@@ -1,6 +1,7 @@
 import { createTheme as createMuiTheme, SxProps, ThemeOptions } from '@mui/material/styles';
 import { merge } from 'lodash';
 import overwriteTheme from '@frontend/extensions/app/layout/theme';
+import tinycolor from 'tinycolor2';
 
 // Extend MUI theme interface to include custom properties
 declare module '@mui/material/styles' {
@@ -280,6 +281,19 @@ export const darkCoralReefTheme = createCustomTheme({
     },
     secondary: {
       main: '#8B4513',
+    },
+  },
+});
+
+// Custom theme handling
+export const customTheme = (color: string, isDarkMode: boolean) => createCustomTheme({
+  palette: {
+    mode: !isDarkMode ? 'dark' : 'light',
+    primary: {
+      main: isDarkMode ? tinycolor(color).lighten(20).toHexString() : color,
+    },
+    secondary: {
+      main: isDarkMode ? '#000000' : '#FFFFFF',
     },
   },
 });
