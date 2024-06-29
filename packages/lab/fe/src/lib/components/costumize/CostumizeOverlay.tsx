@@ -84,7 +84,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
             borderRadius: '18px', // Rounded corners of the modal container
             boxShadow: 5, // Shadow of the container
             left: { xs: '5vw', sm: '20vw', md: '43vw', lg: '53vw' }, // Responsive left positioning
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', // Background color based on theme mode
+            backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', // Background color based on theme mode
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -93,7 +93,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
           
           <div>
             {/* Section for color customization */}
-            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Color</Div>
+            <Div sx={{ backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', color: '#000000' }}>Color</Div>
             <MuiColorInput
               sx={{
                 marginTop: '6px',
@@ -101,7 +101,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
                   color: '#000000', // Text color based on theme mode
                 },
                 '& .MuiInputBase-root': {
-                  backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', // White background for the input field
+                  backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', // White background for the input field
                 },
               }}
               value={value}
@@ -109,7 +109,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
               format="hex"
             />
             {/* Section for font customization */}
-            <Div sx={{ marginTop: '5px', backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Font</Div>
+            <Div sx={{ marginTop: '5px', backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', color: '#000000' }}>Font</Div>
             <FormControl fullWidth>
               <InputLabel id="font-selector" sx={{ color: '#000000' }}>Font</InputLabel>
               <Select
