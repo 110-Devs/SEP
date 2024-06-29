@@ -16,8 +16,8 @@ import {
   darkBlueOceanTheme,
   coralReefTheme,
   darkCoralReefTheme,
+  customTheme,
 } from '../../../../lab/fe/src/lib/components/template/CustomThemes';
-import tinycolor from 'tinycolor2';
 
 export type FontType = 'Roboto' | 'Montserrat' | 'Source Code Pro' | 'Ubuntu' | 'Dancing Script' | 'Kalam';
 
@@ -176,19 +176,7 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
         break;
       case 'custom':
       case 'darkCustom':
-        const color = tinycolor(customColor);
-        const primaryColor = mode === 'darkCustom' ? color.lighten(20).toHexString() : customColor;
-        themeOptions = {
-          palette: {
-            mode: mode === 'darkCustom' ? 'dark' : 'light',
-            primary: {
-              main: primaryColor,
-            },
-            secondary: {
-              main: mode === 'darkCustom' ? '#000000' : '#FFFFFF',
-            },
-          },
-        };
+        themeOptions = customTheme(customColor, mode === 'darkCustom');
         break;
       case 'blueOcean':
         themeOptions = blueOceanTheme;
