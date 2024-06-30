@@ -131,10 +131,18 @@ export class PersistentManager {
     pageRoute: string
   ): Promise<Object | undefined> {
     const dnd = await PersistentManager.ds.getDoc('__drag-and-drop', pageRoute);
+<<<<<<< HEAD
+=======
+    const order = await PersistentManager.ds.getDoc('__sorting', pageRoute);
+>>>>>>> upstream/dev
     const func = await PersistentManager.ds.getDoc('__js-function', pageRoute);
 
     return {
       dnd,
+<<<<<<< HEAD
+=======
+      order,
+>>>>>>> upstream/dev
       func,
     };
   }

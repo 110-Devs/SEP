@@ -48,6 +48,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
   const route = useRouteStore((state) => state.currentRoute);
   const lastMessageWasGreeting = useRef(false);
+  const messageHistoryIndex = useRef<number>(-1);
 
   // Types of responses the chat can handle
   type ResponseType = 'greeting' | 'processing' | 'completed';
@@ -135,16 +136,48 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     }
   }, [messages]);
 
+  // Focus on the input field when the chat window is opened
+  useEffect(() => {
+    if (inputField.current) {
+      inputField.current.focus();
+    }
+  }, []);
+
   // Handle input changes
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+    if (event.target.value === '') {
+      messageHistoryIndex.current = -1; // Reset the message history index when input is cleared to reset cycling
+    }
   };
 
-  // Handle key down events for sending messages with Enter key
+  // Handle key down events for sending messages with Enter key and cycling through previous messages with Up arrow key
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter' && !event.shiftKey && inputValue.trim() !== '') {
       event.preventDefault();
       handleSendMessage();
+    } else if (event.key === 'ArrowUp') {
+      handleCycleMessages('up');
+    } else if (event.key === 'ArrowDown') {
+      handleCycleMessages('down');
+    }
+  };
+
+  // Handle cycling through previous messages with Up and Down arrow keys
+  const handleCycleMessages = (direction: 'up' | 'down') => {
+    const userMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]')
+      .filter((message: { content: string; isUser: boolean }) => message.isUser);
+
+    if (userMessages.length > 0) {
+      let newIndex = messageHistoryIndex.current;
+      if (direction === 'up') {
+        newIndex = newIndex < userMessages.length - 1 ? newIndex + 1 : newIndex;
+      } else {
+        newIndex = newIndex > 0 ? newIndex - 1 : -1;
+      }
+      const messageToDisplay = newIndex !== -1 ? userMessages[userMessages.length - 1 - newIndex].content : '';
+      setInputValue(messageToDisplay);
+      messageHistoryIndex.current = newIndex;
     }
   };
 
@@ -222,6 +255,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     tempContainer.appendChild(mainElement);
     const mainElementString = tempContainer.innerHTML;
 
+    const mainElement = domJSON.toDOM(withoutSelectorJSON.newNode);
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(mainElement);
+    const mainElementString = tempContainer.innerHTML;
+
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
     const req = modifiedRequest({ prompt: inputValue });
 
@@ -235,6 +273,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
 
       //Automatic execution of the method.
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
+<<<<<<< HEAD
+=======
+      console.log(newTask);
+>>>>>>> upstream/dev
 
       axios.post('http://localhost:3000/api/save', {
         collection: '__js-function',
