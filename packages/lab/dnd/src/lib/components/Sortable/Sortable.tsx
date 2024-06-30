@@ -18,8 +18,8 @@ import { styled } from '@mui/system';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import styles from './SortableItem.module.css';
 import axios from 'axios';
-import { usePageData } from '@frontend/hooks/use-page-data';
 import { useComponentOrder } from '../../store';
+import { useRouteStore } from '@cody-engine/lab/dnd';
 
 const DraggableButton = styled(IconButton)({
   padding: 0,
@@ -67,7 +67,6 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, content }) => {
 
 type SortableProps = {
   children: React.ReactNode[];
-  route: string;
 };
 
 type Child = {
@@ -75,17 +74,16 @@ type Child = {
   content: React.ReactNode;
 };
 
-export const Sortable: React.FC<SortableProps> = ({ children, route }) => {
+export const Sortable: React.FC<SortableProps> = ({ children }) => {
   const order = useComponentOrder((state) => state.order);
   const setOrder = useComponentOrder((state) => state.setOrder);
   const [childrens, setChildrens] = useState<Child[]>([]);
-  const [pageData,] = usePageData();
-  const pageRoute = Object.keys(pageData)[0];
+  const route = useRouteStore((state) => state.currentRoute);
 
   useEffect(() => {
     const fetchModifications = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/get-sorting-modifications?collection=__sorting&route=${pageRoute}`);
+        const response = await axios.get(`http://localhost:3000/api/get-sorting-modifications?collection=__sorting&route=${route}`);
         const modifications = response?.data;
 
         if (modifications && modifications.data && modifications.data.components) {
@@ -97,7 +95,7 @@ export const Sortable: React.FC<SortableProps> = ({ children, route }) => {
     };
 
     fetchModifications();
-  }, [pageRoute]);
+  }, [route]);
 
   useEffect(() => {
     setChildrens(
@@ -112,19 +110,19 @@ export const Sortable: React.FC<SortableProps> = ({ children, route }) => {
     const { active, over } = event;
   
     if (!over || active.id === over.id) return;
+
+    axios.post('http://localhost:3000/api/save', {
+      collection: '__sorting',
+      route: route,
+      modifications: {
+        components: order,
+      }
+    });
   
     const originalPos = childrens.findIndex(child => child.id === active.id);
     const newPos = childrens.findIndex(child => child.id === over.id);
     const newOrder = arrayMove(order, originalPos, newPos);
     setOrder(newOrder as [number, number]);
-
-    axios.post('http://localhost:3000/api/save', {
-      collection: '__sorting',
-      route: pageRoute,
-      modifications: {
-        components: newOrder,
-      }
-    });
   };
 
   const [isOn, setIsOn] = useState(() => {

@@ -25,6 +25,7 @@ import { adjustTask } from '@ai/src/lib/evaluate/adjustTask';
 import ChatIcon from '@mui/icons-material/Chat';
 import TypingIndicator from './TypingIndicator';
 import MyButtonComponent from './ExitButton'; // Import MyButtonComponent
+import { useRouteStore } from '@cody-engine/lab/dnd';
 
 // Define the props for the ChatWindow component
 interface ChatWindowProps {
@@ -45,6 +46,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const inputField = useRef<HTMLInputElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
+  const route = useRouteStore((state) => state.currentRoute);
   const lastMessageWasGreeting = useRef(false);
 
   // Types of responses the chat can handle
@@ -218,6 +220,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     console.log(newJSON)
     console.log(newJSON.selectorMap);
 
+    const mainElement = domJSON.toDOM(withoutSelectorJSON.newNode);
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(mainElement);
+    const mainElementString = tempContainer.innerHTML;
+
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
     console.log('Processing prompt:', inputValue);
     const req = modifiedRequest({ prompt: inputValue });
@@ -225,8 +232,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     try {
       const response = await axios.post(API_URL, {
         prompt: `
-        JSON representation:
-        ${jsonString} \n
+        Main Element:
+        ${mainElementString} \n
         ${req}`,
       });
       console.log(response.data);
@@ -234,6 +241,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
       //Automatic execution of the method.
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
       console.log(newTask);
+
+      axios.post('http://localhost:3000/api/save', {
+        collection: '__js-function',
+        route: route,
+        modifications: {
+          prompt: inputValue,
+          func: newTask,
+        },
+      });
+
       eval('(' + newTask + ')()');
       simulateTyping(getRandomResponse('completed'));
 
