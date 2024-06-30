@@ -29,7 +29,6 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
    */
   const handleFontChange = (event: SelectChangeEvent<FontType>) => {
     setFont(event.target.value as FontType); // Update selected font in context state
-    console.log(`Font changed to: ${event.target.value}`);
   };
 
   /**
