@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useMemo} from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useMemo} from 'react';
 import { ThemeProvider as MuiThemeProvider, createTheme, ThemeOptions } from '@mui/material/styles';
 
 import {
@@ -16,8 +16,8 @@ import {
   darkBlueOceanTheme,
   coralReefTheme,
   darkCoralReefTheme,
+  customTheme,
 } from '../../../../lab/fe/src/lib/components/template/CustomThemes';
-import tinycolor from 'tinycolor2';
 
 export type FontType = 'Roboto' | 'Montserrat' | 'Source Code Pro' | 'Ubuntu' | 'Dancing Script' | 'Kalam';
 
@@ -103,10 +103,26 @@ const mergeTypographyWithFontFamily = (baseTypography: any, fontFamily: string) 
 
 // Main component to toggle color modes and fonts
 const ToggleColorMode = ({ children }: { children: ReactNode }) => {
-  // States to manage the current theme and font
-  const [mode, setMode] = useState<ThemeType>('light');
-  const [font, setFont] = useState<FontType>('Roboto');
-  const [customColor, setCustomColor] = useState<string>('#ffffff');
+  // Initialize state from localStorage or set to default values
+  const [mode, setMode] = useState<ThemeType>(() => {
+    // Get theme from local storage or default to 'light'
+    return localStorage.getItem('appTheme') as ThemeType || 'light';
+  });
+  const [font, setFont] = useState<FontType>(() => {
+    // Get font from local storage or default to 'Roboto'
+    return localStorage.getItem('appFont') as FontType || 'Roboto';
+  });
+  const [customColor, setCustomColor] = useState<string>(() => {
+    // Get custom color from local storage or default to '#ffffff'
+    return localStorage.getItem('appCustomColor') || '#ffffff';
+  });
+
+  useEffect(() => {
+    // Persist theme settings in localStorage
+    localStorage.setItem('appTheme', mode);
+    localStorage.setItem('appFont', font);
+    localStorage.setItem('appCustomColor', customColor);
+  }, [mode, font, customColor]); // Update localStorage when these values change
 
   const contextValue = useMemo(() => ({
     mode,
@@ -160,19 +176,7 @@ const ToggleColorMode = ({ children }: { children: ReactNode }) => {
         break;
       case 'custom':
       case 'darkCustom':
-        const color = tinycolor(customColor);
-        const primaryColor = mode === 'darkCustom' ? color.lighten(20).toHexString() : customColor;
-        themeOptions = {
-          palette: {
-            mode: mode === 'darkCustom' ? 'dark' : 'light',
-            primary: {
-              main: primaryColor,
-            },
-            secondary: {
-              main: mode === 'darkCustom' ? '#000000' : '#FFFFFF',
-            },
-          },
-        };
+        themeOptions = customTheme(customColor, mode === 'darkCustom');
         break;
       case 'blueOcean':
         themeOptions = blueOceanTheme;

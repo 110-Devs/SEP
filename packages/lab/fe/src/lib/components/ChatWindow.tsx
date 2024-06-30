@@ -33,8 +33,11 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
-  // State hooks for managing component state
-  const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>([]);
+  // Initialize messages state from local storage or set to empty array
+  const [messages, setMessages] = useState<{ content: string; isUser: boolean }[]>(() => {
+    const storedMessages = localStorage.getItem('chatMessages');
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
   const [inputValue, setInputValue] = useState('');
   const [placeholder, setPlaceholder] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -44,6 +47,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
   const route = useRouteStore((state) => state.currentRoute);
+  const lastMessageWasGreeting = useRef(false);
 
   // Types of responses the chat can handle
   type ResponseType = 'greeting' | 'processing' | 'completed';
@@ -97,18 +101,37 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   };
 
   useEffect(() => {
-    setPlaceholder(getRandomPrompt()); // Set initial placeholder for inputfield out of promptExamples
-    if (!hasTypedInitialMessage.current) {
-      // Check if the initial message has already been typed
-      hasTypedInitialMessage.current = true; // Prevent multiple initial greetings
-      simulateTyping(getRandomResponse('greeting')); 
+    setPlaceholder(getRandomPrompt());
+
+    // Load stored messages from localStorage
+    const storedMessages: { content: string; isUser: boolean }[] = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+
+    // Check if the last stored message was from the AI and was a greeting
+    if (storedMessages.length > 0 && !storedMessages[storedMessages.length - 1].isUser) {
+      const lastAIMessage = storedMessages[storedMessages.length - 1].content;
+      if (responses.greeting.includes(lastAIMessage)) {
+        lastMessageWasGreeting.current = true;
+      } else {
+        lastMessageWasGreeting.current = false;
+      }
     }
-  }, []); // Run only once after the component mounts
+
+    // Simulate greeting message if no stored messages or last message was not a greeting
+    if (!hasTypedInitialMessage.current && !lastMessageWasGreeting.current) {
+      hasTypedInitialMessage.current = true;
+      simulateTyping(getRandomResponse('greeting'));
+    }
+  }, []);
+
+  // Update local storage whenever messages change
+  useEffect(() => {
+    localStorage.setItem('chatMessages', JSON.stringify(messages));
+  }, [messages]);
 
   // Effect to scroll to the last message whenever message list updates
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+      lastMessageRef.current.scrollIntoView();
     }
   }, [messages]);
 
@@ -229,8 +252,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
       });
 
       eval('(' + newTask + ')()');
+      simulateTyping(getRandomResponse('completed'));
 
     } catch (error) {
+      simulateTyping("Error: The given task could not be processed. Please paraphrase the prompt or try again.");
       console.error('Error sending prompt:', error);
     }
   };
@@ -239,7 +264,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const handleSendMessage = async () => {
     if (inputValue.trim() !== '') {
       setMessages(prevMessages => [...prevMessages, { content: inputValue, isUser: true }]);
-      const userPrompt = inputValue;
       setInputValue('');
 
       setTimeout(() => {
@@ -250,7 +274,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
           await sendPrompt();
           setIsProcessing(false); // Hide the typing indicator after processing
 
-          simulateTyping(getRandomResponse('completed'));
         }, 4000);
       }, 1000);
 

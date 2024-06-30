@@ -8,6 +8,7 @@ import { ColorModeContext, FontType } from '@frontend/app/providers/ToggleColorM
 import { Div } from '../drag-drop/DragDropOptions';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { debounce } from 'lodash';
 
 interface CostumizeOverlayProps {
   onClose: () => void; // Function to close the overlay
@@ -40,21 +41,22 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
   };
 
   const [value, setValue] = useState('#ffffff'); // State for storing the selected color value
+  
+
+  // Debounced function for handling color changes
+  const debouncedHandleColorChange = debounce((newValue: string) => {
+    setValue(newValue);
+    setCustomColor(newValue);
+    setTheme('darkCustom');
+    }, 200); // Adjust debounce delay as needed
 
   /**
    * Function to handle color changes.
    * @param newValue The new color value in hexadecimal format.
    */
+   // Use debounced function in onChange
   const handleColorChange = (newValue: string) => {
-    setValue(newValue); // Update selected color in local state
-    setCustomColor(newValue); // Update custom color in context state
-    if (mode === 'custom' || mode === 'darkCustom') {
-      setCustomColor(newValue); // Update custom color in context state
-      setTheme(mode === 'darkCustom' ? 'darkCustom' : 'custom'); // Set theme mode based on current mode
-    } else {
-      setCustomColor(newValue); // Update custom color in context state
-      setTheme('custom'); // Set theme mode to custom
-    }
+  debouncedHandleColorChange(newValue);
   };
 
   /**
@@ -84,7 +86,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
             borderRadius: '18px', // Rounded corners of the modal container
             boxShadow: 5, // Shadow of the container
             left: { xs: '5vw', sm: '20vw', md: '43vw', lg: '53vw' }, // Responsive left positioning
-            backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', // Background color based on theme mode
+            backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', // Background color based on theme mode
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -93,7 +95,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
           
           <div>
             {/* Section for color customization */}
-            <Div sx={{ backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Color</Div>
+            <Div sx={{ backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', color: '#000000' }}>Color</Div>
             <MuiColorInput
               sx={{
                 marginTop: '6px',
@@ -101,7 +103,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
                   color: '#000000', // Text color based on theme mode
                 },
                 '& .MuiInputBase-root': {
-                  backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', // White background for the input field
+                  backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', // White background for the input field
                 },
               }}
               value={value}
@@ -109,7 +111,7 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
               format="hex"
             />
             {/* Section for font customization */}
-            <Div sx={{ marginTop: '5px', backgroundColor: mode === 'dark' ? '#90caf9' : '#f5f5f5', color: '#000000' }}>Font</Div>
+            <Div sx={{ marginTop: '5px', backgroundColor: mode === 'dark' ? '#f5f5f5' : '#f5f5f5', color: '#000000' }}>Font</Div>
             <FormControl fullWidth>
               <InputLabel id="font-selector" sx={{ color: '#000000' }}>Font</InputLabel>
               <Select
