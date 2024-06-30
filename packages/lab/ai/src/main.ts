@@ -19,7 +19,6 @@ app.use(express.json());
 app.post('/api/send-prompt', async (req, res) => {
   try {
     const prompt: string = req.body.prompt;
-    console.log(`Processing prompt: ${prompt}`);
 
     const API_URL =
       'https://f4359ba8-80fc-455d-a8e6-fad069f30239.app.gra.ai.cloud.ovh.net/api/generate';
@@ -32,7 +31,6 @@ app.post('/api/send-prompt', async (req, res) => {
 
     const response = await axios.post(API_URL, data, header);
 
-    console.log('This is the response: ' + response.data.response);
     res.send(response.data.response);
   } catch (error) {
     console.error('Error processing the prompt:', error);
@@ -88,6 +86,14 @@ app.get('/api/get-all-modifications', async (req, res) => {
   } catch (error: any) {
     res.status(500).send(error.message);
   }
+});
+
+app.post('/api/reset-modification', async (req, res) => {
+  try {
+    const collection: string = req.body.collection;
+    PersistentManager.resetCollections(collection);
+    res.sendStatus(200);
+  } catch (error) {}
 });
 
 app.listen(port, () => {
