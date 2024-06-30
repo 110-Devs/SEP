@@ -10,19 +10,12 @@ import HistoryIcon from '@mui/icons-material/History';
 import PreviewIcon from '@mui/icons-material/Preview';
 import ListItemText from '@mui/material/ListItemText';
 import { initializeMenuItems, menuItems } from './save-files';
-<<<<<<< HEAD
 import { Grid, IconButton, Typography } from '@mui/material';
-=======
-import { Grid, Typography } from '@mui/material';
->>>>>>> upstream/dev
 import ExitButton from '../ExitButton';
 import { usePageData } from '@frontend/hooks/use-page-data';
 import { useCoordinateStore, useComponentOrder, useRouteStore } from '@cody-engine/lab/dnd';
 import { ColorModeContext } from '@frontend/app/providers/ToggleColorMode';
-<<<<<<< HEAD
 import axios from 'axios';
-=======
->>>>>>> upstream/dev
 
 // Styles for list item text
 
@@ -30,16 +23,6 @@ const listItemTextStyle = {
   fontSize: '16px',
   color: '#000000',
   overflowWrap: 'break-word',
-<<<<<<< HEAD
-=======
-};
-
-const listItemDateStyle = {
-  fontSize: '14px',
-  color: '#000000',
-  textAlign: 'right',
-  marginTop: '8px',
->>>>>>> upstream/dev
 };
 
 const listItemDateStyle = {
@@ -48,7 +31,6 @@ const listItemDateStyle = {
   textAlign: 'right',
   marginTop: '8px',
 };
-
 
 export default function VersionControl() {
   const [open, setOpen] = React.useState(false);

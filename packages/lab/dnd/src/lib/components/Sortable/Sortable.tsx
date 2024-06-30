@@ -129,20 +129,11 @@ export const Sortable: React.FC<SortableProps> = ({ children }) => {
     const { active, over } = event;
   
     if (!over || active.id === over.id) return;
-
-    axios.post('http://localhost:3000/api/save', {
-      collection: '__sorting',
-      route: route,
-      modifications: {
-        components: order,
-      }
-    });
   
     const originalPos = childrens.findIndex(child => child.id === active.id);
     const newPos = childrens.findIndex(child => child.id === over.id);
     const newOrder = arrayMove(order, originalPos, newPos);
     setOrder(newOrder as [number, number]);
-<<<<<<< HEAD
 
     axios.post('http://localhost:3000/api/save', {
       collection: '__sorting',
@@ -151,8 +142,6 @@ export const Sortable: React.FC<SortableProps> = ({ children }) => {
         components: newOrder,
       }
     });
-=======
->>>>>>> upstream/dev
   };
 
   if (route === '/dashboard') {

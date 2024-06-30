@@ -74,29 +74,7 @@ export async function initializeMenuItems(
       })
     : [];
 
-<<<<<<< HEAD
     menuItems = [...dndModifications, ...funcModifications];
-=======
-    let func: string[] = [];
-
-    const funcModifications: MenuItem[] = modifications.func
-    ? modifications.func.modifications.map((modification: any) => {
-        const currentFunc = [...func, modification.data.func]; // Create a new array with the current function
-        func.push(modification.data.func); // Add to the global func array
-        return {
-          text: modification.data.prompt,
-          date: new Date(modification.timestamp),
-          function: () => {
-            localStorage.setItem('funcToExecute', JSON.stringify(currentFunc));
-            window.location.reload();
-          },
-          icon: <AutoAwesomeIcon sx={{ fontSize: 20 }} />,
-        };
-      })
-    : [];
-
-    menuItems = [...dndModifications, ...orderModifications, ...funcModifications];
->>>>>>> upstream/dev
     menuItems.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
