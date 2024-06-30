@@ -250,8 +250,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     //Converting everything to String for the prompt
     const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    console.log(newJSON)
-    console.log(newJSON.selectorMap);
+    const mainElement = domJSON.toDOM(withoutSelectorJSON.newNode);
+    const tempContainer = document.createElement('div');
+    tempContainer.appendChild(mainElement);
+    const mainElementString = tempContainer.innerHTML;
 
     const mainElement = domJSON.toDOM(withoutSelectorJSON.newNode);
     const tempContainer = document.createElement('div');
@@ -259,7 +261,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
     const mainElementString = tempContainer.innerHTML;
 
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
-    console.log('Processing prompt:', inputValue);
     const req = modifiedRequest({ prompt: inputValue });
 
     try {
@@ -269,11 +270,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
         ${mainElementString} \n
         ${req}`,
       });
-      console.log(response.data);
 
       //Automatic execution of the method.
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
+<<<<<<< HEAD
+=======
       console.log(newTask);
+>>>>>>> upstream/dev
 
       axios.post('http://localhost:3000/api/save', {
         collection: '__js-function',

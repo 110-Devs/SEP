@@ -15,7 +15,6 @@ export function adjustTask(
 
   if (match) {
     const functionString = match[1];
-    console.log(functionString);
 
     //returns the selector from the array
     const replacedTask: string = functionString.replace(classIdentifier, (match: string): string => {

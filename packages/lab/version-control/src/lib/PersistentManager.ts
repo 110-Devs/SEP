@@ -110,16 +110,39 @@ export class PersistentManager {
     return currentModifications;
   }
 
+  public static async resetCollections(collection: string): Promise<void> {
+    const collectionsToReset = [
+      PersistentManager.DRAG_AND_DROP_COLLECTION,
+      PersistentManager.SORTING_COLLECTION,
+      PersistentManager.JS_FUNCTION_COLLECTION,
+    ];
+  
+    for (const coll of collectionsToReset) {
+      const existingDoc = await PersistentManager.ds.getDoc(coll, collection);
+      if (existingDoc !== null) {
+        await PersistentManager.ds.replaceDoc(coll, collection, {
+          modifications: []
+        });
+      }
+    }
+  }  
+
   public static async getAllModifications(
     pageRoute: string
   ): Promise<Object | undefined> {
     const dnd = await PersistentManager.ds.getDoc('__drag-and-drop', pageRoute);
+<<<<<<< HEAD
+=======
     const order = await PersistentManager.ds.getDoc('__sorting', pageRoute);
+>>>>>>> upstream/dev
     const func = await PersistentManager.ds.getDoc('__js-function', pageRoute);
 
     return {
       dnd,
+<<<<<<< HEAD
+=======
       order,
+>>>>>>> upstream/dev
       func,
     };
   }

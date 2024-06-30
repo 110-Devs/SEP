@@ -10,11 +10,19 @@ import HistoryIcon from '@mui/icons-material/History';
 import PreviewIcon from '@mui/icons-material/Preview';
 import ListItemText from '@mui/material/ListItemText';
 import { initializeMenuItems, menuItems } from './save-files';
+<<<<<<< HEAD
+import { Grid, IconButton, Typography } from '@mui/material';
+=======
 import { Grid, Typography } from '@mui/material';
+>>>>>>> upstream/dev
 import ExitButton from '../ExitButton';
 import { usePageData } from '@frontend/hooks/use-page-data';
 import { useCoordinateStore, useComponentOrder, useRouteStore } from '@cody-engine/lab/dnd';
 import { ColorModeContext } from '@frontend/app/providers/ToggleColorMode';
+<<<<<<< HEAD
+import axios from 'axios';
+=======
+>>>>>>> upstream/dev
 
 // Styles for list item text
 
@@ -22,6 +30,16 @@ const listItemTextStyle = {
   fontSize: '16px',
   color: '#000000',
   overflowWrap: 'break-word',
+<<<<<<< HEAD
+=======
+};
+
+const listItemDateStyle = {
+  fontSize: '14px',
+  color: '#000000',
+  textAlign: 'right',
+  marginTop: '8px',
+>>>>>>> upstream/dev
 };
 
 const listItemDateStyle = {
@@ -31,10 +49,6 @@ const listItemDateStyle = {
   marginTop: '8px',
 };
 
-// Function to handle list item click
-const handleListItemClick = (text: string) => {
-  console.log(`Clicked on: ${text}`);
-};
 
 export default function VersionControl() {
   const [open, setOpen] = React.useState(false);
@@ -96,6 +110,31 @@ export default function VersionControl() {
           </ListItem>
         ))}
       </List>
+      <Box
+        sx={{
+          position: 'absolute', // Changed from 'relative' to 'fixed'
+          bottom: 0,
+          width: '100%',
+          padding: '10px',
+          display: 'flex',
+          backgroundColor: '#f5f5f5',
+          justifyContent: 'center',
+          zIndex: 1000,
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            axios.post('http://localhost:3000/api/reset-modification', {
+              collection: route,
+            })
+            window.location.reload();
+          }}
+        >
+          Reset Version Control
+        </Button>
+      </Box>
     </Box>
   );
 

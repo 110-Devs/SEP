@@ -44,10 +44,7 @@ const ChatInputField = () => {
     //Converting everything to String for the prompt
     const jsonString = JSON.stringify(withoutSelectorJSON.newNode);
 
-    console.log(newJSON.selectorMap);
-
     const API_URL = `${environment.HOST}:${environment.PORT}${environment.ROUTES.SEND_PROMPT}`;
-    console.log('Processing prompt:', prompt);
     const req = modifiedRequest({ prompt });
     
     try {
@@ -57,11 +54,9 @@ const ChatInputField = () => {
         ${jsonString} \n
         ${req}`,
       });
-      console.log(response.data);
 
       //Automatic execution of the method.
       const newTask: string = adjustTask(newJSON.selectorMap, response.data);
-      console.log(newTask);
       eval("(" + newTask + ")()");
 
       setPrompt('');
@@ -72,8 +67,6 @@ const ChatInputField = () => {
   };
   
   const [pageData,] = usePageData();
-  console.log(`pd: ${Object.values(pageData)}`);
-  
 
   return (
     <InputContainer>

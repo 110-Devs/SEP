@@ -2,6 +2,7 @@ import axios from 'axios';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ReorderIcon from '@mui/icons-material/Reorder';
+import { remove } from 'lodash';
 
 export interface MenuItem {
   text: string;
@@ -55,17 +56,27 @@ export async function initializeMenuItems(
       }))
     : [];
 
-  const orderModifications: MenuItem[] = modifications.order
-    ? modifications.order.modifications.map((modification: any) => ({
-        text: 'Reordered',
-        date: new Date(modification.timestamp),
-        function: () => {
-          setOrder(modification.data.components);
-        },
-        icon: <ReorderIcon sx={{ fontSize: 20 }} />,
-      }))
+    let func: string[] = [];
+
+    const funcModifications: MenuItem[] = modifications.func
+    ? modifications.func.modifications.map((modification: any) => {
+        const currentFunc = [...func, modification.data.func]; // Create a new array with the current function
+        func.push(modification.data.func); // Add to the global func array
+        return {
+          text: modification.data.prompt,
+          date: new Date(modification.timestamp),
+          function: () => {
+            localStorage.setItem('funcToExecute', JSON.stringify(currentFunc));
+            window.location.reload();
+          },
+          icon: <AutoAwesomeIcon sx={{ fontSize: 20 }} />,
+        };
+      })
     : [];
 
+<<<<<<< HEAD
+    menuItems = [...dndModifications, ...funcModifications];
+=======
     let func: string[] = [];
 
     const funcModifications: MenuItem[] = modifications.func
@@ -85,6 +96,7 @@ export async function initializeMenuItems(
     : [];
 
     menuItems = [...dndModifications, ...orderModifications, ...funcModifications];
+>>>>>>> upstream/dev
     menuItems.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 

@@ -45,7 +45,6 @@ const Templates: React.FC<TemplateProps> = ({ onClose }) => {
   // Handle changing the font style
   const handleFontChange = (event: SelectChangeEvent<FontType>) => {
     setFont(event.target.value as FontType);
-    console.log(`Font changed to: ${event.target.value}`);
   };
 
   // Reset to the default theme

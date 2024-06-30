@@ -49,17 +49,36 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, content }) => {
     transform: CSS.Transform.toString(transform),
   };
 
+    const [isOn, setIsOn] = useState(() => {
+    const savedState = localStorage.getItem('toggleState');
+    return savedState === 'true';
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedState = localStorage.getItem('toggleState');
+      setIsOn(savedState === 'true');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   return (
     <div ref={setNodeRef} style={style} className={styles.sortableItem}>
-      <div className={styles.draggableButtonWrapper}>
-        <DraggableButton
-          ref={setActivatorNodeRef}
-          {...listeners}
-          {...attributes}
-        >
-          <DragIndicatorIcon />
-        </DraggableButton>
-      </div>
+      {isOn && (
+        <div className={styles.draggableButtonWrapper}>
+          <DraggableButton
+            ref={setActivatorNodeRef}
+            {...listeners}
+            {...attributes}
+          >
+            <DragIndicatorIcon />
+          </DraggableButton>
+        </div>
+      )}
       {content}
     </div>
   );
@@ -123,26 +142,20 @@ export const Sortable: React.FC<SortableProps> = ({ children }) => {
     const newPos = childrens.findIndex(child => child.id === over.id);
     const newOrder = arrayMove(order, originalPos, newPos);
     setOrder(newOrder as [number, number]);
+<<<<<<< HEAD
+
+    axios.post('http://localhost:3000/api/save', {
+      collection: '__sorting',
+      route: route,
+      modifications: {
+        components: newOrder,
+      }
+    });
+=======
+>>>>>>> upstream/dev
   };
 
-  const [isOn, setIsOn] = useState(() => {
-    const savedState = localStorage.getItem('toggleState');
-    return savedState === 'true';
-  });
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedState = localStorage.getItem('toggleState');
-      setIsOn(savedState === 'true');
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  if (route === '/dashboard' || !isOn) {
+  if (route === '/dashboard') {
     return <React.Fragment>{children}</React.Fragment>;
   }
   

@@ -1,4 +1,4 @@
-pimport {QueryClientProvider} from "@tanstack/react-query";
+import {QueryClientProvider} from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {PlayStandardPage} from "@cody-play/app/pages/play-standard-page";
 import {
@@ -114,7 +114,6 @@ export function App() {
     addAfterDispatchListener((updatedState) => {
       const newRoutes = Object.values(updatedState.pages).map(p => p.route);
 
-      console.log(currentRoutes, newRoutes);
       if(currentRoutes.length === newRoutes.length && JSON.stringify(currentRoutes) === JSON.stringify(newRoutes)) {
         return;
       }

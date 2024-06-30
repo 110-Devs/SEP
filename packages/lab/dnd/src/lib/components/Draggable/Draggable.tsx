@@ -21,6 +21,7 @@ type Props = {
   id: string;
   left: number;
   top: number;
+  isToggleOn: boolean;
 };
 
 /**
@@ -44,6 +45,7 @@ export function Draggable({
   id,
   left,
   top,
+  isToggleOn,
 }: Props) {
   const {
     attributes,
@@ -113,7 +115,7 @@ export function Draggable({
           ...style,
         }}
       >
-        <div className={`${styless.draggableButton}`}>
+        <div className={`${styless.draggableButton}`} style={!isToggleOn ? {visibility: 'hidden'} : {}}>
           <DraggableButton ref={setActivatorNodeRef} {...listeners}>
             <DragIndicatorIcon />
           </DraggableButton>
