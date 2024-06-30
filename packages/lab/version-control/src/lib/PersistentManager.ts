@@ -25,7 +25,9 @@ type SortingData = {
   };
 };
 
-type JsFunctionData = {};
+type JsFunctionData = {
+  func: string;
+};
 
 interface ModificationTypeMap {
   DragAndDropData: DragAndDropData;
@@ -113,10 +115,12 @@ export class PersistentManager {
   ): Promise<Object | undefined> {
     const dnd = await PersistentManager.ds.getDoc('__drag-and-drop', pageRoute);
     const order = await PersistentManager.ds.getDoc('__sorting', pageRoute);
+    const func = await PersistentManager.ds.getDoc('__js-function', pageRoute);
 
     return {
       dnd,
       order,
+      func,
     };
   }
 

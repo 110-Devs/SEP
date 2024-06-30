@@ -6,6 +6,8 @@ import {loadCommandComponent} from "@frontend/util/components/load-command-compo
 import {loadViewComponent} from "@frontend/util/components/load-view-components";
 import {PageRegistry, pages} from "@frontend/app/pages/index";
 import {Sortable} from "@cody-engine/lab/dnd"
+import { useRouteStore } from "@cody-engine/lab/dnd"
+import { useEffect } from "react";
 
 interface Props {
   page: PageDefinition
@@ -42,9 +44,13 @@ export const StandardPage = (props: Props) => {
     return <Grid2 key={'comp' + index} xs={12}>{ViewComponent(routeParams)}</Grid2>
   });
 
+  useEffect(() => {
+    useRouteStore.getState().updateRoute(props.page.route);
+  }, [props.page.route]);
+
   return <Grid2 container={true} spacing={3}>
     {/* {commandBar}
     {components} */}
-    <Sortable route={props.page.route} children={[commandBar, components]}/>
+    <Sortable children={[commandBar, components]}/>
   </Grid2>
 }

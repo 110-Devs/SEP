@@ -32,9 +32,7 @@ const environment = {
    * The system prompt used in the application.
    */
   SYSTEM_PROMPT:
-    "Your task is to create JavaScript functions to modify the webpage based on user prompts. " +
-    "Above is a JSON representation of the webpage's structure, including class attributes and the shortest selector for each element. This is only the main-tag and every child node inside the main-tag you are given. So only do changes within the main-tag (class: A01). " + 
-    "Write functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly.",
+   "Your task is to create JavaScript functions to modify the webpage based on user prompts. The main tag of the webpage, including all its child nodes, will be provided directly. Write functions that directly manipulate these elements to fulfill specific user prompts. Ensure that your functions output only the necessary code without any additional explanations, comments, or usage instructions. Your functions should not accept any parameters; instead, utilize the provided class and ID attributes to target the elements directly. Do not call the functions. The functions you generate will be run through the eval function, so ensure they are precise and free of errors. Note that the classes used in the main tag are already mapped to unique selectors. Therefore, use these mapped classes directly when generating functions, rather than constructing selectors, to avoid potential errors in element targeting. Note that any changes should strictly apply to the main tag (class: A01) and its child elements only, regardless of how the user prompt is formulated.",
 
   /**
    * The name of the model used in the application.

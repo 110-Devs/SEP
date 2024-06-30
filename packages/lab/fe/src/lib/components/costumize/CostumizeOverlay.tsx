@@ -8,6 +8,7 @@ import { ColorModeContext, FontType } from '@frontend/app/providers/ToggleColorM
 import { Div } from '../drag-drop/DragDropOptions';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { debounce } from 'lodash';
 
 interface CostumizeOverlayProps {
   onClose: () => void; // Function to close the overlay
@@ -40,21 +41,22 @@ const CostumizeOverlay: React.FC<CostumizeOverlayProps> = ({ onClose }) => {
   };
 
   const [value, setValue] = useState('#ffffff'); // State for storing the selected color value
+  
+
+  // Debounced function for handling color changes
+  const debouncedHandleColorChange = debounce((newValue: string) => {
+    setValue(newValue);
+    setCustomColor(newValue);
+    setTheme('darkCustom');
+    }, 200); // Adjust debounce delay as needed
 
   /**
    * Function to handle color changes.
    * @param newValue The new color value in hexadecimal format.
    */
+   // Use debounced function in onChange
   const handleColorChange = (newValue: string) => {
-    setValue(newValue); // Update selected color in local state
-    setCustomColor(newValue); // Update custom color in context state
-    if (mode === 'custom' || mode === 'darkCustom') {
-      setCustomColor(newValue); // Update custom color in context state
-      setTheme(mode === 'darkCustom' ? 'darkCustom' : 'custom'); // Set theme mode based on current mode
-    } else {
-      setCustomColor(newValue); // Update custom color in context state
-      setTheme('custom'); // Set theme mode to custom
-    }
+  debouncedHandleColorChange(newValue);
   };
 
   /**

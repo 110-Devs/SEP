@@ -1,5 +1,6 @@
 import axios from 'axios';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ReorderIcon from '@mui/icons-material/Reorder';
 
 export interface MenuItem {
@@ -36,6 +37,7 @@ export async function initializeMenuItems(
   }
 
   if (!modifications || !modifications.dnd) {
+    resetMenuItems();
     return;
   }
 
@@ -64,13 +66,48 @@ export async function initializeMenuItems(
       }))
     : [];
 
-  menuItems = [...dndModifications, ...orderModifications];
-  menuItems.sort((a, b) => b.date.getTime() - a.date.getTime());
+    let func: string[] = [];
+
+    const funcModifications: MenuItem[] = modifications.func
+    ? modifications.func.modifications.map((modification: any) => {
+        const currentFunc = [...func, modification.data.func]; // Create a new array with the current function
+        func.push(modification.data.func); // Add to the global func array
+        return {
+          text: modification.data.prompt,
+          date: new Date(modification.timestamp),
+          function: () => {
+            localStorage.setItem('funcToExecute', JSON.stringify(currentFunc));
+            window.location.reload();
+          },
+          icon: <AutoAwesomeIcon sx={{ fontSize: 20 }} />,
+        };
+      })
+    : [];
+
+    menuItems = [...dndModifications, ...orderModifications, ...funcModifications];
+    menuItems.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
 function extractId(elementId: string) {
   const match = elementId.match(/\.(\w+)$/);
   return match ? match[1] : elementId;
+}
+
+window.addEventListener('load', () => {
+  const funcToExecute = localStorage.getItem('funcToExecute');
+  if (funcToExecute) {
+    const functions = JSON.parse(funcToExecute);
+    functions.forEach((func: string) => {
+      try {
+        eval('(' + func + ')()');
+      } catch (error) {}
+    });
+    localStorage.removeItem('funcToExecute');
+  }
+});
+
+function resetMenuItems() {
+  menuItems = [];
 }
 
 export let menuItems: MenuItem[] = [];
