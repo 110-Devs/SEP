@@ -76,9 +76,9 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
     };
   }, []);
 
-  if (!isOn) {
-    return <>{children}</>;
-  }
+  // if (!isOn) {
+  //   return <>{children}</>;
+  // }
 
   /**
    * Extracts the ID of a React element from its children.
@@ -250,6 +250,7 @@ export const SnapToGrid = ({ children, activationConstraint }: Props) => {
               styles={{ alignItems: 'flex-start' }}
               top={coordinate.y}
               left={coordinate.x}
+              isToggleOn={isOn}
             >
               {child}
             </Draggable>
