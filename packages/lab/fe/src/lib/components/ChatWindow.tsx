@@ -46,6 +46,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ handleClose }) => {
   const inputField = useRef<HTMLInputElement>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const hasTypedInitialMessage = useRef(false); // Add ref to track initial message
+  const route = useRouteStore((state) => state.currentRoute);
   const lastMessageWasGreeting = useRef(false);
   const messageHistoryIndex = useRef<number>(-1);
 
